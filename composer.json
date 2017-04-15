@@ -1,0 +1,23 @@
+{
+    "name": "rossmitchell/module-twofactor",
+    "description": "A two factor authentication module that protects both the admin and customer logins",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "email": "ross.mitchell@gmail.com",
+            "name": "Ross Mitchell"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "phpgangsta/googleauthenticator": "dev-master"
+    },
+    "autoload": {
+        "files": [
+            "src/registration.php"
+        ],
+        "psr-4": {
+            "Rossmitchell\\Twofactor\\": "src/"
+        }
+    }
+}
