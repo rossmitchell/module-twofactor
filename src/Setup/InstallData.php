@@ -2,19 +2,19 @@
 /**
  * A two factor authentication module that protects both the admin and customer logins
  * Copyright (C) 2017  Ross Mitchell
- * 
+ *
  * This file is part of Rossmitchell/Twofactor.
- * 
+ *
  * Rossmitchell/Twofactor is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,7 +35,7 @@ class InstallData implements InstallDataInterface
     /**
      * Constructor
      *
-     * @param \Magento\Customer\Setup\CustomerSetupFactory $customerSetupFactory
+     * @param CustomerSetupFactory $customerSetupFactory
      */
     public function __construct(
         CustomerSetupFactory $customerSetupFactory
@@ -64,7 +64,7 @@ class InstallData implements InstallDataInterface
             'backend' => ''
         ]);
 
-        
+
         $attribute = $customerSetup->getEavConfig()->getAttribute('customer', 'use_two_factor_authentication')
             ->addData(['used_in_forms' => [
                 'adminhtml_customer',
@@ -72,7 +72,7 @@ class InstallData implements InstallDataInterface
                 'customer_account_edit'
             ]]);
         $attribute->save();
-        
+
 
         $customerSetup->addAttribute('customer', 'two_factor_secret', [
             'type' => 'varchar',

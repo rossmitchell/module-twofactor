@@ -1,23 +1,33 @@
 {
-    "name": "rossmitchell/module-twofactor",
-    "description": "A two factor authentication module that protects both the admin and customer logins",
-    "license": "GPL-3.0",
-    "authors": [
-        {
-            "email": "ross.mitchell@gmail.com",
-            "name": "Ross Mitchell"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "phpgangsta/googleauthenticator": "dev-master"
-    },
-    "autoload": {
-        "files": [
-            "src/registration.php"
-        ],
-        "psr-4": {
-            "Rossmitchell\\Twofactor\\": "src/"
-        }
+  "name": "rossmitchell/module-twofactor",
+  "description": "A two factor authentication module that protects both the admin and customer logins",
+  "license": "GPL-3.0",
+  "type": "magento2-module",
+  "authors": [
+    {
+      "email": "ross.mitchell@gmail.com",
+      "name": "Ross Mitchell"
     }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://repo.magento.com/"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": "~5.5.0|~5.6.0|~7.0.0",
+    "magento/magento-composer-installer": "*",
+    "magento/framework": "~100.0",
+    "phpgangsta/googleauthenticator": "dev-master"
+  },
+  "autoload": {
+    "files": [
+      "src/registration.php"
+    ],
+    "psr-4": {
+      "Rossmitchell\\Twofactor\\": "src/"
+    }
+  }
 }
