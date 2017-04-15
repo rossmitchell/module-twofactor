@@ -44,7 +44,7 @@ class Secret
     {
         /* Check that we have a customer */
         $customer = $this->getCustomer();
-        if (null === $customer->getId()) {
+        if ($customer === false || null === $customer->getId()) {
             return false;
         }
 

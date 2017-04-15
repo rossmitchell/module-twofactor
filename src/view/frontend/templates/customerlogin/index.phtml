@@ -6,11 +6,15 @@ $secret = $block->getSecret();
 
 <h1>Your Secret is</h1>
 <p><?php echo $secret; ?></p>
+<?php if($secret !== false) { ?>
 <h1>Your QR Code is</h1>
 <p>
     <img src="<?php echo $block->getQRCode('Ross', 'test@example.com', $secret); ?>" />
 </p>
-<form class="form" action="verify" method="post">
+<h1>A valid code is </h1>
+<p><?php echo $block->displayCurrentCode($secret); ?></p>
+<?php } ?>
+<form class="form" action="/twofactor/customerlogin/verify" method="post">
 
     <fieldset class="fieldset">
         <legend class="legend">

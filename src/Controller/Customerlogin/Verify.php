@@ -26,29 +26,40 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\PageFactory;
+use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use PragmaRX\Google2FA\Google2FA;
+use Rossmitchell\Twofactor\Model\Customer\Secret;
+use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Verify as GoogleVerify;
 
 class Verify extends Action
 {
 
     protected $resultPageFactory;
     /**
-     * @var Google2FA
+     * @var Secret
      */
-    private $google2FA;
+    private $secret;
+    /**
+     * @var GoogleVerify
+     */
+    private $verify;
 
     /**
      * Constructor
      *
-     * @param Context     $context
-     * @param PageFactory $resultPageFactory
-     * @param Google2FA   $google2FA
+     * @param Context      $context
+     * @param PageFactory  $resultPageFactory
+     * @param Secret       $secret
+     * @param GoogleVerify $verify
+     *
+     * @internal param Google2FA $google2FA
      */
-    public function __construct(Context $context, PageFactory $resultPageFactory, Google2FA $google2FA)
+    public function __construct(Context $context, PageFactory $resultPageFactory, Secret $secret, GoogleVerify $verify)
     {
         $this->resultPageFactory = $resultPageFactory;
         parent::__construct($context);
-        $this->google2FA = $google2FA;
+        $this->secret = $secret;
+        $this->verify = $verify;
     }
 
     /**
@@ -59,7 +70,14 @@ class Verify extends Action
      */
     public function execute()
     {
-        $number = $this->getRequest()->getParam('number');
+        $secret = $this->getRequest()->getParam('secret');
+
+        $customerSecret = $this->secret->getSecret();
+        try {
+            $verify = $this->verify->verify($customerSecret, $secret);
+        } catch (InvalidCharactersException $exception) {
+            $verify = false;
+        }
 
         $resultPage = $this->resultPageFactory->create();
 
@@ -68,13 +86,11 @@ class Verify extends Action
             'Magento\Framework\View\Element\Messages',
             'answer'
         );
-        if (is_numeric($number)) {
-            $messageBlock->addSuccess($number . ' times 2 is ' . ($number * 2));
+        if ($verify === true) {
+            $messageBlock->addSuccess("The code was correct");
         } else {
-            $messageBlock->addError('You didn\'t enter a number!');
+            $messageBlock->addError('The code was incorrect');
         }
-
-        $messageBlock->addSuccess($this->google2FA->generateSecretKey(32));
 
         $resultPage->getLayout()->setChild(
             'content',

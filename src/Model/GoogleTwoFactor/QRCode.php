@@ -46,4 +46,13 @@ class QRCode
 
         return $qrCode;
     }
+
+    public function displayCurrentCode($secret)
+    {
+        $timeStamp = $this->google2FA->getTimestamp();
+        $seed = $this->google2FA->base32Decode($secret);
+        $code = $this->google2FA->oathHotp($seed, $timeStamp);
+
+        return $code;
+    }
 }

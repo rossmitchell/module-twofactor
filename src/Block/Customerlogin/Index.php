@@ -23,6 +23,7 @@ namespace Rossmitchell\Twofactor\Block\Customerlogin;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Rossmitchell\Twofactor\Model\Customer\Secret as CustomerSecret;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\QRCode;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Secret;
 
@@ -36,29 +37,50 @@ class Index extends Template
      * @var QRCode
      */
     private $code;
+    /**
+     * @var CustomerSecret
+     */
+    private $customerSecret;
 
     /**
      * Index constructor.
      *
-     * @param Context $context
-     * @param Secret  $secret
-     * @param QRCode  $code
-     * @param array   $data
+     * @param Context        $context
+     * @param Secret         $secret
+     * @param QRCode         $code
+     * @param CustomerSecret $customerSecret
+     * @param array          $data
      */
-    public function __construct(Context $context, Secret $secret, QRCode $code, array $data = [])
-    {
+    public function __construct(
+        Context $context,
+        Secret $secret,
+        QRCode $code,
+        CustomerSecret $customerSecret,
+        array $data = []
+    ) {
         parent::__construct($context, $data);
-        $this->secret = $secret;
-        $this->code = $code;
+        $this->secret         = $secret;
+        $this->code           = $code;
+        $this->customerSecret = $customerSecret;
     }
 
     public function getSecret()
     {
-        return $this->secret->generateSecret();
+        $secret = false;
+        if($this->customerSecret->hasASecret()) {
+            $secret = $this->customerSecret->getSecret();
+        }
+
+        return $secret;
     }
 
     public function getQRCode($company, $email, $secret)
     {
         return $this->code->generateQRCode($company, $email, $secret);
+    }
+
+    public function displayCurrentCode($secret)
+    {
+        return $this->code->displayCurrentCode($secret);
     }
 }

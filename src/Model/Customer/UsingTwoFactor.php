@@ -21,9 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Model\Customer;
 
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Model\Session;
-
 class UsingTwoFactor
 {
     /**
