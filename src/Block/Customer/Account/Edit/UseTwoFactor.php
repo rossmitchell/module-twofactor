@@ -19,46 +19,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Block\Customerlogin;
+namespace Rossmitchell\Twofactor\Block\Customer\Account\Edit;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Rossmitchell\Twofactor\Model\GoogleTwoFactor\QRCode;
-use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Secret;
+use Rossmitchell\Twofactor\Model\Customer\UsingTwoFactor;
 
-class Index extends Template
+class UseTwoFactor extends Template
 {
     /**
-     * @var Secret
+     * @var UsingTwoFactor
      */
-    private $secret;
-    /**
-     * @var QRCode
-     */
-    private $code;
+    private $usingTwoFactor;
 
     /**
-     * Index constructor.
+     * UseTwoFactor constructor.
      *
      * @param Context $context
-     * @param Secret  $secret
-     * @param QRCode  $code
-     * @param array   $data
+     * @param UsingTwoFactor   $usingTwoFactor
+     * @param array            $data
      */
-    public function __construct(Context $context, Secret $secret, QRCode $code, array $data = [])
+    public function __construct(Context $context, UsingTwoFactor $usingTwoFactor, array $data = [])
     {
         parent::__construct($context, $data);
-        $this->secret = $secret;
-        $this->code = $code;
+        $this->usingTwoFactor = $usingTwoFactor;
     }
 
-    public function getSecret()
+    public function isUsingTwoFactor()
     {
-        return $this->secret->generateSecret();
+        return $this->usingTwoFactor->isCustomerUsingTwoFactor();
     }
 
-    public function getQRCode($company, $email, $secret)
+    public function getSelectedForYes()
     {
-        return $this->code->generateQRCode($company, $email, $secret);
+        return $this->getSelectedSnippet(true);
+    }
+
+    public function getSelectedForNo()
+    {
+        return $this->getSelectedSnippet(false);
+    }
+
+    private function getSelectedSnippet($condition)
+    {
+        $html = '';
+        if ($this->isUsingTwoFactor() === $condition) {
+            $html = ' selected="selected"';
+        }
+
+        return $html;
     }
 }

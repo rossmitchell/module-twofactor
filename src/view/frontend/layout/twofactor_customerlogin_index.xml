@@ -1,8 +1,11 @@
 <?xml version="1.0" ?>
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-	<body>
-		<referenceContainer name="content">
-			<block class="Rossmitchell\Twofactor\Block\Customerlogin\Index" name="customerlogin.index" template="Rossmitchell_Twofactor::customerlogin/index.phtml"/>
-		</referenceContainer>
-	</body>
+    <head>
+        <title>Two Factor Authentication Form</title>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Rossmitchell\Twofactor\Block\Customerlogin\Index" name="customerlogin.index" template="Rossmitchell_Twofactor::customerlogin/index.phtml"/>
+        </referenceContainer>
+    </body>
 </page>

@@ -22,6 +22,10 @@
 namespace Rossmitchell\Twofactor\Setup;
 
 use Magento\Customer\Model\Customer;
+use Magento\Customer\Setup\CustomerSetup;
+use Magento\Eav\Api\AttributeRepositoryInterface;
+use Magento\Eav\Model\AttributeRepository;
+use Magento\Eav\Model\Entity\Attribute\SetFactory as AttributeSetFactory;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Customer\Setup\CustomerSetupFactory;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -31,16 +35,30 @@ class InstallData implements InstallDataInterface
 {
 
     private $customerSetupFactory;
+    /**
+     * @var AttributeSetFactory
+     */
+    private $attributeSetFactory;
+    /**
+     * @var AttributeRepository
+     */
+    private $attributeRepository;
 
     /**
      * Constructor
      *
-     * @param CustomerSetupFactory $customerSetupFactory
+     * @param CustomerSetupFactory         $customerSetupFactory
+     * @param AttributeSetFactory          $attributeSetFactory
+     * @param AttributeRepositoryInterface $attributeRepository
      */
     public function __construct(
-        CustomerSetupFactory $customerSetupFactory
+        CustomerSetupFactory $customerSetupFactory,
+        AttributeSetFactory $attributeSetFactory,
+        AttributeRepositoryInterface $attributeRepository
     ) {
         $this->customerSetupFactory = $customerSetupFactory;
+        $this->attributeSetFactory  = $attributeSetFactory;
+        $this->attributeRepository  = $attributeRepository;
     }
 
     /**
@@ -50,40 +68,60 @@ class InstallData implements InstallDataInterface
         ModuleDataSetupInterface $setup,
         ModuleContextInterface $context
     ) {
-        $customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
+        /** @var CustomerSetup $customerSetup */
+        $customerSetup  = $this->customerSetupFactory->create(['setup' => $setup]);
+        $customerEntity = $customerSetup->getEavConfig()->getEntityType('customer');
+        $attributeSetId = $customerEntity->getDefaultAttributeSetId();
 
-        $customerSetup->addAttribute('customer', 'use_two_factor_authentication', [
-            'type' => 'int',
-            'label' => 'use_two_factor_authentication',
-            'input' => 'boolean',
-            'source' => '',
-            'required' => true,
-            'visible' => true,
-            'position' => 333,
-            'system' => false,
-            'backend' => ''
-        ]);
+        /** @var $attributeSet AttributeSet */
+        $attributeSet     = $this->attributeSetFactory->create();
+        $attributeGroupId = $attributeSet->getDefaultGroupId($attributeSetId);
+
+        $customerSetup->addAttribute(
+            'customer',
+            'use_two_factor_authentication',
+            [
+                'type' => 'int',
+                'label' => 'use_two_factor_authentication',
+                'input' => 'boolean',
+                'source' => '',
+                'required' => true,
+                'visible' => true,
+                'position' => 333,
+                'system' => false,
+                'backend' => ''
+            ]
+        );
 
 
-        $attribute = $customerSetup->getEavConfig()->getAttribute('customer', 'use_two_factor_authentication')
-            ->addData(['used_in_forms' => [
-                'adminhtml_customer',
-                'customer_account_create',
-                'customer_account_edit'
-            ]]);
+        $attribute = $customerSetup->getEavConfig()->getAttribute('customer', 'use_two_factor_authentication')->addData(
+            [
+                'attribute_set_id' => $attributeSetId,
+                'attribute_group_id' => $attributeGroupId,
+                'used_in_forms' => [
+                    'adminhtml_customer',
+                    'customer_account_create',
+                    'customer_account_edit'
+                ]
+            ]
+        );
         $attribute->save();
 
 
-        $customerSetup->addAttribute('customer', 'two_factor_secret', [
-            'type' => 'varchar',
-            'label' => 'two_factor_secret',
-            'input' => 'text',
-            'source' => '',
-            'required' => false,
-            'visible' => false,
-            'position' => 333,
-            'system' => false,
-            'backend' => ''
-        ]);
+        $customerSetup->addAttribute(
+            'customer',
+            'two_factor_secret',
+            [
+                'type' => 'varchar',
+                'label' => 'two_factor_secret',
+                'input' => 'text',
+                'source' => '',
+                'required' => false,
+                'visible' => false,
+                'position' => 334,
+                'system' => false,
+                'backend' => ''
+            ]
+        );
     }
 }

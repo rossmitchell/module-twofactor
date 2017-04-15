@@ -1,0 +1,23 @@
+<?php
+/** @var \Rossmitchell\Twofactor\Block\Customer\Account\Edit\UseTwoFactor $block */ ?>
+<fieldset class="fieldset create account" data-hasrequired="<?php /* @escapeNotVerified */
+echo __('* Required Fields') ?>">
+    <legend class="legend">
+        <span><?php /* @escapeNotVerified */
+            echo __('Account Security') ?></span>
+    </legend>
+    <p>
+    <div class="field regulation">
+        <label for="regulation" class="label">
+            <span><?php /* @escapeNotVerified */
+                echo __('Use Two Factor Authentication') ?></span>
+        </label>
+        <div class="control">
+            <select id="use_two_factor_authentication" name="use_two_factor_authentication" class="select">
+                <option value="0"<?php echo $block->getSelectedForNo(); ?>>No</option>
+                <option value="1"<?php echo $block->getSelectedForYes(); ?>>Yes</option>
+            </select>
+        </div>
+    </div>
+    </p>
+</fieldset>

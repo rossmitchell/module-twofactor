@@ -1,1 +1,38 @@
-Hello customerlogin/index.phtml
+<?php
+/** @var $block Rossmitchell\Twofactor\Block\Customerlogin\Index */
+$secret = $block->getSecret();
+
+?>
+
+<h1>Your Secret is</h1>
+<p><?php echo $secret; ?></p>
+<h1>Your QR Code is</h1>
+<p>
+    <img src="<?php echo $block->getQRCode('Ross', 'test@example.com', $secret); ?>" />
+</p>
+<form class="form" action="verify" method="post">
+
+    <fieldset class="fieldset">
+        <legend class="legend">
+            <span><?php /* @escapeNotVerified */ echo __('Two Factor Authentication') ?></span>
+        </legend><br>
+        <div class="field required">
+            <label for="secret" class="label">
+                <span><?php /* @escapeNotVerified */ echo __('Please enter your code') ?></span>
+            </label>
+
+            <div class="control">
+                <input type="text" id="secret" name="secret" class="input-text">
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="actions-toolbar">
+        <div class="primary">
+            <button type="submit" class="action submit primary" title="<?php /* @escapeNotVerified */ echo __('Submit') ?>">
+                <span><?php /* @escapeNotVerified */ echo __('Submit') ?></span>
+            </button>
+        </div>
+    </div>
+
+</form>
