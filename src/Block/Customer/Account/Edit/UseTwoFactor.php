@@ -42,16 +42,20 @@ class UseTwoFactor extends Template
     /**
      * UseTwoFactor constructor.
      *
-     * @param Context          $context
+     * @param Context $context
      * @param IsUsingTwoFactor $isUsingTwoFactor
-     * @param Getter           $customerGetter
-     * @param array            $data
+     * @param Getter $customerGetter
+     * @param array $data
      */
-    public function __construct(Context $context, IsUsingTwoFactor $isUsingTwoFactor, Getter $customerGetter, array $data = [])
-    {
+    public function __construct(
+        Context $context,
+        IsUsingTwoFactor $isUsingTwoFactor,
+        Getter $customerGetter,
+        array $data = []
+    ) {
         parent::__construct($context, $data);
         $this->isUsingTwoFactor = $isUsingTwoFactor;
-        $this->customerGetter = $customerGetter;
+        $this->customerGetter   = $customerGetter;
     }
 
     public function getCustomer()
@@ -70,12 +74,12 @@ class UseTwoFactor extends Template
 
     public function getSelectedForYes(CustomerInterface $customer)
     {
-        return $this->getSelectedSnippet($customer,true);
+        return $this->getSelectedSnippet($customer, true);
     }
 
     public function getSelectedForNo(CustomerInterface $customer)
     {
-        return $this->getSelectedSnippet($customer,false);
+        return $this->getSelectedSnippet($customer, false);
     }
 
     private function getSelectedSnippet(CustomerInterface $customer, $condition)

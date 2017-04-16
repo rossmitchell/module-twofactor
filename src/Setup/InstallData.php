@@ -93,10 +93,9 @@ class InstallData implements InstallDataInterface
                 'visible' => true,
                 'position' => 333,
                 'system' => false,
-                'backend' => ''
+                'backend' => '',
             ]
         );
-
 
         $attribute = $customerSetup->getEavConfig()->getAttribute('customer', $useTwoFactorCode)->addData(
             [
@@ -105,8 +104,8 @@ class InstallData implements InstallDataInterface
                 'used_in_forms' => [
                     'adminhtml_customer',
                     'customer_account_create',
-                    'customer_account_edit'
-                ]
+                    'customer_account_edit',
+                ],
             ]
         );
         $attribute->save();
@@ -125,7 +124,7 @@ class InstallData implements InstallDataInterface
                 'visible' => false,
                 'position' => 334,
                 'system' => false,
-                'backend' => ''
+                'backend' => '',
             ]
         );
     }

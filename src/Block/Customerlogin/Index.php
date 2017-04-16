@@ -66,10 +66,10 @@ class Index extends Template
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->secret         = $secret;
-        $this->code           = $code;
+        $this->secret          = $secret;
+        $this->code            = $code;
         $this->twoFactorSecret = $twoFactorSecret;
-        $this->customerGetter = $customerGetter;
+        $this->customerGetter  = $customerGetter;
     }
 
     public function getCustomer()
@@ -81,7 +81,7 @@ class Index extends Template
     {
         $secret = false;
 
-        if($this->twoFactorSecret->hasValue($customer)) {
+        if ($this->twoFactorSecret->hasValue($customer)) {
             $secret = $this->twoFactorSecret->getValue($customer);
         }
 
