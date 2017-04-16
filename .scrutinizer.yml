@@ -10,8 +10,4 @@ build:
             - phpcs-run --config-set installed_paths /home/scrutinizer/build/vendor/magento/marketplace-eqp/
             - phpcs-run --standard=MEQP2 --ignore=./vendor/ ./
     cache:
-        directories: [ bin/, ~/.composer/cache ]credentials:
-    http_basic:
-        'repo.magento.com':
-            username: 64557e0a6bbdba200ee8c971523ff620
-            password: 689a0df797318643760331594c8c72a7
+        directories: [ bin/, ~/.composer/cache ]
