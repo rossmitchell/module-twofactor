@@ -92,6 +92,11 @@ class Verify extends Action
     {
         $secret             = $this->getRequest()->getParam('secret');
         $customer           = $this->customerGetter->getCustomer();
+
+        if($customer === false) {
+            return $this->handleMissingCustomer();
+        }
+
         $verificationPassed = $this->verifySecret($customer, $secret);
 
         if ($verificationPassed === false) {
@@ -119,6 +124,12 @@ class Verify extends Action
         $this->addSuccessMessage();
         $accountUrl = $this->twoFactorUrls->getCustomerAccountUrl();
         return $this->redirect($accountUrl);
+    }
+
+    private function handleMissingCustomer()
+    {
+        $loginUrl = $this->twoFactorUrls->getCustomerLogInUrl();
+        $this->redirect($loginUrl);
     }
 
     private function handleError()

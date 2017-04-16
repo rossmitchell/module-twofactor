@@ -35,7 +35,7 @@ class Getter
      */
     private $customerSession;
     /**
-     * @var CustomerInterface
+     * @var CustomerInterface|false
      */
     private $customer;
 
