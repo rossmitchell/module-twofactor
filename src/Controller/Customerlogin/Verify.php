@@ -90,10 +90,10 @@ class Verify extends Action
      */
     public function execute()
     {
-        $secret             = $this->getRequest()->getParam('secret');
-        $customer           = $this->customerGetter->getCustomer();
+        $secret   = $this->getRequest()->getParam('secret');
+        $customer = $this->customerGetter->getCustomer();
 
-        if($customer === false) {
+        if ($customer === false) {
             return $this->handleMissingCustomer();
         }
 
@@ -123,6 +123,7 @@ class Verify extends Action
         $this->isVerified->setCustomerIsVerified();
         $this->addSuccessMessage();
         $accountUrl = $this->twoFactorUrls->getCustomerAccountUrl();
+
         return $this->redirect($accountUrl);
     }
 
@@ -137,6 +138,7 @@ class Verify extends Action
         $this->isVerified->removeCustomerIsVerified();
         $this->addErrorMessage();
         $authenticateUrl = $this->twoFactorUrls->getCustomerAuthenticationUrl();
+
         return $this->redirect($authenticateUrl);
     }
 

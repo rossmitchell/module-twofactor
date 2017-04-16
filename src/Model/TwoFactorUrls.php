@@ -78,6 +78,7 @@ class TwoFactorUrls
     private function compareUrls($firstUrl, $secondUrl)
     {
         $charList = '\t\n\r/';
+
         return (trim($firstUrl, $charList) === trim($secondUrl, $charList));
     }
 }
