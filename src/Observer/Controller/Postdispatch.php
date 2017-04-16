@@ -29,8 +29,9 @@ use Magento\Framework\UrlInterface;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Getter;
 use Rossmitchell\Twofactor\Model\Customer\IsVerified;
+use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 
-class Predispatch implements ObserverInterface
+class Postdispatch implements ObserverInterface
 {
     /**
      * @var ResponseFactory
@@ -52,6 +53,10 @@ class Predispatch implements ObserverInterface
      * @var IsVerified
      */
     private $isVerified;
+    /**
+     * @var TwoFactorUrls
+     */
+    private $twoFactorUrls;
 
     /**
      * Predispatch constructor.
@@ -61,19 +66,22 @@ class Predispatch implements ObserverInterface
      * @param Getter           $customerGetter
      * @param IsVerified       $isVerified
      * @param IsUsingTwoFactor $isUsingTwoFactor
+     * @param TwoFactorUrls    $twoFactorUrls
      */
     public function __construct(
         ResponseFactory $responseFactory,
         UrlInterface $url,
         Getter $customerGetter,
         IsVerified $isVerified,
-        IsUsingTwoFactor $isUsingTwoFactor
+        IsUsingTwoFactor $isUsingTwoFactor,
+        TwoFactorUrls $twoFactorUrls
     ) {
         $this->responseFactory  = $responseFactory;
         $this->url              = $url;
         $this->customerGetter   = $customerGetter;
         $this->isUsingTwoFactor = $isUsingTwoFactor;
         $this->isVerified = $isVerified;
+        $this->twoFactorUrls = $twoFactorUrls;
     }
 
     /**
@@ -97,11 +105,7 @@ class Predispatch implements ObserverInterface
 
     private function shouldTheCustomerBeRedirected()
     {
-        if ($this->areWeOnTheAuthenticationPage() === true) {
-            return false;
-        }
-
-        if ($this->areWeOnTheVerificationPage() === true) {
+        if($this->areWeOnAnAllowedPage() === true) {
             return false;
         }
 
@@ -117,25 +121,18 @@ class Predispatch implements ObserverInterface
         return true;
     }
 
-    private function areWeOnTheAuthenticationPage()
+    private function areWeOnAnAllowedPage()
     {
-        $currentUrl  = $this->url->getCurrentUrl();
-        $redirectUrl = $this->getUrlToRedirectTo();
+        $twoFactorUrls = $this->twoFactorUrls;
+        if ($twoFactorUrls->areWeOnTheAuthenticationPage() === true) {
+            return true;
+        }
 
-        return ($currentUrl === $redirectUrl);
-    }
+        if ($twoFactorUrls->areWeOnTheVerificationPage() === true) {
+            return true;
+        }
 
-    private function areWeOnTheVerificationPage()
-    {
-        $currentUrl      = trim($this->url->getCurrentUrl(), '/');
-        $verificationUrl = trim($this->url->getUrl('twofactor/customerlogin/verify'), '/');
-
-        return ($currentUrl === $verificationUrl);
-    }
-
-    private function getUrlToRedirectTo()
-    {
-        return $this->url->getUrl('twofactor/customerlogin/index');
+        return false;
     }
 
     private function hasTwoFactorBeenChecked()
@@ -147,7 +144,7 @@ class Predispatch implements ObserverInterface
 
     private function redirectToTwoFactorCheck(Action $controller)
     {
-        $twoFactorCheckUrl = $this->getUrlToRedirectTo();
+        $twoFactorCheckUrl = $this->twoFactorUrls->getCustomerAuthenticationUrl();
         $response          = $controller->getResponse();
         $response->setRedirect($twoFactorCheckUrl);
     }

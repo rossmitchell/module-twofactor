@@ -21,15 +21,14 @@
 
 namespace Rossmitchell\Twofactor\Setup;
 
-use Magento\Customer\Model\Customer;
 use Magento\Customer\Setup\CustomerSetup;
+use Magento\Customer\Setup\CustomerSetupFactory;
 use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Eav\Model\AttributeRepository;
 use Magento\Eav\Model\Entity\Attribute\SetFactory as AttributeSetFactory;
-use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Customer\Setup\CustomerSetupFactory;
-use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\InstallDataInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
 
