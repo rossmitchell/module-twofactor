@@ -24,7 +24,6 @@ namespace Rossmitchell\Twofactor\Setup;
 use Magento\Customer\Setup\CustomerSetup;
 use Magento\Customer\Setup\CustomerSetupFactory;
 use Magento\Eav\Api\AttributeRepositoryInterface;
-use Magento\Eav\Model\AttributeRepository;
 use Magento\Eav\Model\Entity\Attribute\SetFactory as AttributeSetFactory;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
@@ -41,7 +40,7 @@ class InstallData implements InstallDataInterface
      */
     private $attributeSetFactory;
     /**
-     * @var AttributeRepository
+     * @var AttributeRepositoryInterface
      */
     private $attributeRepository;
 

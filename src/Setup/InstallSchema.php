@@ -40,8 +40,18 @@ class InstallSchema implements InstallSchemaInterface
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $installer = $setup;
-
         $installer->startSetup();
+        $version = $context->getVersion();
+
+        if (version_compare($version, '0.0.1') < 0) {
+            $this->addColumnsToAdminTable($installer);
+        }
+
+        $installer->endSetup();
+    }
+
+    private function addColumnsToAdminTable(SchemaSetupInterface $installer)
+    {
         $tableAdmins = $installer->getTable('admin_user');
 
         $installer->getConnection()->addColumn(
@@ -64,7 +74,5 @@ class InstallSchema implements InstallSchemaInterface
                 'comment' => 'Two Factor Secret',
             ]
         );
-
-        $installer->endSetup();
     }
 }
