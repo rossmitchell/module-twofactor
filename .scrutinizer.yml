@@ -1,0 +1,11 @@
+checks:
+    php: true
+
+tools:
+    php_code_sniffer:
+        config: { standard: 'Zend,PSR-1,PSR-2' }
+    php_changetracking: false
+    php_cs_fixer: true
+    php_mess_detector: true
+    php_pdepend: true
+    php_analyzer: true
