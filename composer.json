@@ -25,6 +25,9 @@
     "pragmarx/google2fa": "~1.0.1",
     "bacon/bacon-qr-code":"~1.0.1"
   },
+  "require-dev": {
+      "magento/marketplace-eqp": "~1.0.5"
+  },
   "autoload": {
     "files": [
       "src/registration.php"

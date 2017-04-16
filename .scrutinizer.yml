@@ -1,11 +1,17 @@
 checks:
     php: true
 
-tools:
-    php_code_sniffer:
-        config: { standard: 'Zend,PSR-1,PSR-2' }
-    php_changetracking: false
-    php_cs_fixer: true
-    php_mess_detector: true
-    php_pdepend: true
-    php_analyzer: true
+build:
+    dependencies:
+        override:
+            - { command: 'mkdir -p app/etc && rm -rf ./vendor/ && composer install --no-interaction', idle_timeout: 600 }
+    tests:
+        override:
+            - phpcs-run --config-set installed_paths /home/scrutinizer/build/vendor/magento/marketplace-eqp/
+            - phpcs-run --standard=MEQP2 --ignore=./vendor/ ./
+    cache:
+        directories: [ bin/, ~/.composer/cache ]credentials:
+    http_basic:
+        'repo.magento.com':
+            username: 64557e0a6bbdba200ee8c971523ff620
+            password: 689a0df797318643760331594c8c72a7
