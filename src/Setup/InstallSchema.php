@@ -44,18 +44,18 @@ class InstallSchema implements InstallSchemaInterface
         $version = $context->getVersion();
 
         if (version_compare($version, '0.0.1') < 0) {
-            $this->addColumnsToAdminTable($installer);
+            $adminTable = $installer->getTable('admin_user');
+            $this->addUseTwoFactorColumn($installer, $adminTable);
+            $this->addTwoFactorSecretColumn($installer, $adminTable);
         }
 
         $installer->endSetup();
     }
 
-    private function addColumnsToAdminTable(SchemaSetupInterface $installer)
+    private function addUseTwoFactorColumn(SchemaSetupInterface $installer, $adminTable)
     {
-        $tableAdmins = $installer->getTable('admin_user');
-
         $installer->getConnection()->addColumn(
-            $tableAdmins,
+            $adminTable,
             'use_two_factor',
             [
                 'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
@@ -64,9 +64,12 @@ class InstallSchema implements InstallSchemaInterface
                 'comment' => 'Use Two Factor Authentication',
             ]
         );
+    }
 
+    private function addTwoFactorSecretColumn(SchemaSetupInterface $installer, $adminTable)
+    {
         $installer->getConnection()->addColumn(
-            $tableAdmins,
+            $adminTable,
             'two_factor_secret',
             [
                 'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
