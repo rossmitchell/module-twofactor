@@ -1,6 +1,4 @@
 <?php
-use Magento\Framework\UrlInterface;
-
 /**
  * A two factor authentication module that protects both the admin and customer logins
  * Copyright (C) 2017  Ross Mitchell
@@ -20,6 +18,10 @@ use Magento\Framework\UrlInterface;
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+namespace Rossmitchell\Twofactor\Model;
+
+use Magento\Framework\UrlInterface;
 
 class TwoFactorUrls
 {
@@ -46,6 +48,11 @@ class TwoFactorUrls
     public function getCustomerVerificationUrl()
     {
         return $this->url->getUrl('twofactor/customerlogin/verify');
+    }
+
+    public function getCustomerAccountUrl()
+    {
+        return $this->url->getUrl('customer/account/index');
     }
 
     public function getCurrentUrl()

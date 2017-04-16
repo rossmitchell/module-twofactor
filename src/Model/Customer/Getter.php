@@ -23,7 +23,6 @@ namespace Rossmitchell\Twofactor\Model\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Model\Session;
 
 class Getter
 {
@@ -63,7 +62,7 @@ class Getter
 
     private function getCustomerFromSession()
     {
-        $customerId = $this->customerSession->getCustomerId();
+        $customerId = $this->customerSession->getData('customer_id');
         $customer   = false;
 
         if (null !== $customerId) {
@@ -71,12 +70,5 @@ class Getter
         }
 
         return $customer;
-    }
-
-    public function getCustomerSession()
-    {
-        $session = $this->customerSession;
-
-        return $session;
     }
 }

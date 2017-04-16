@@ -21,11 +21,10 @@
 
 namespace Rossmitchell\Twofactor\Block\Customer\Account\Edit;
 
-use DoctrineTest\InstantiatorTestAsset\WakeUpNoticesAsset;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\View\Element\Template;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
 use Rossmitchell\Twofactor\Model\Customer\Getter;
-use Rossmitchell\Twofactor\Model\Customer\Secret;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\QRCode as QRCodeGenerator;
 
 class QRCode extends Template
@@ -35,9 +34,9 @@ class QRCode extends Template
      */
     private $qRCode;
     /**
-     * @var Secret
+     * @var TwoFactorSecret
      */
-    private $secret;
+    private $twoFactorSecret;
     /**
      * @var Getter
      */
@@ -48,36 +47,41 @@ class QRCode extends Template
      *
      * @param Template\Context $context
      * @param QRCodeGenerator  $qRCode
-     * @param Secret           $secret
+     * @param TwoFactorSecret  $twoFactorSecret
      * @param Getter           $customerGetter
      * @param array            $data
      */
     public function __construct(
         Template\Context $context,
         QRCodeGenerator $qRCode,
-        Secret $secret,
+        TwoFactorSecret $twoFactorSecret,
         Getter $customerGetter,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->qRCode = $qRCode;
-        $this->secret = $secret;
+        $this->twoFactorSecret = $twoFactorSecret;
         $this->customerGetter = $customerGetter;
     }
 
-    public function hasAQrCode()
+    public function getCustomer()
     {
-        return $this->secret->hasASecret();
+        return $this->customerGetter->getCustomer();
     }
 
-    public function getQrCode()
+    public function hasAQrCode(CustomerInterface $customer)
     {
-        if ($this->secret->hasASecret() === false) {
+        return $this->twoFactorSecret->hasValue($customer);
+    }
+
+    public function getQrCode(CustomerInterface $customer)
+    {
+        if ($this->twoFactorSecret->hasValue($customer) === false) {
             throw new \Exception("Could not load the QR code because the customer does not have a secret");
         }
 
-        $secret = $this->secret->getSecret();
-        $email  = $this->customerGetter->getCustomer()->getEmail();
+        $secret = $this->twoFactorSecret->hasValue($customer);
+        $email  = $customer->getEmail();
         $qrCode = $this->qRCode->generateQRCode('Test', $email, $secret);
 
         return $qrCode;

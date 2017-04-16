@@ -23,7 +23,8 @@ namespace Rossmitchell\Twofactor\Block\Customerlogin;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Rossmitchell\Twofactor\Model\Customer\Secret as CustomerSecret;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
+use Rossmitchell\Twofactor\Model\Customer\Getter;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\QRCode;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Secret;
 
@@ -38,37 +39,50 @@ class Index extends Template
      */
     private $code;
     /**
-     * @var CustomerSecret
+     * @var TwoFactorSecret
      */
-    private $customerSecret;
+    private $twoFactorSecret;
+    /**
+     * @var Getter
+     */
+    private $customerGetter;
 
     /**
      * Index constructor.
      *
-     * @param Context        $context
-     * @param Secret         $secret
-     * @param QRCode         $code
-     * @param CustomerSecret $customerSecret
-     * @param array          $data
+     * @param Context         $context
+     * @param Secret          $secret
+     * @param QRCode          $code
+     * @param TwoFactorSecret $twoFactorSecret
+     * @param Getter          $customerGetter
+     * @param array           $data
      */
     public function __construct(
         Context $context,
         Secret $secret,
         QRCode $code,
-        CustomerSecret $customerSecret,
+        TwoFactorSecret $twoFactorSecret,
+        Getter $customerGetter,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->secret         = $secret;
         $this->code           = $code;
-        $this->customerSecret = $customerSecret;
+        $this->twoFactorSecret = $twoFactorSecret;
+        $this->customerGetter = $customerGetter;
     }
 
-    public function getSecret()
+    public function getCustomer()
+    {
+        return $this->customerGetter->getCustomer();
+    }
+
+    public function getSecret($customer)
     {
         $secret = false;
-        if($this->customerSecret->hasASecret()) {
-            $secret = $this->customerSecret->getSecret();
+
+        if($this->twoFactorSecret->hasValue($customer)) {
+            $secret = $this->twoFactorSecret->getValue($customer);
         }
 
         return $secret;

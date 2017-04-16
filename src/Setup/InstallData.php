@@ -30,6 +30,8 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Customer\Setup\CustomerSetupFactory;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\InstallDataInterface;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
 
 class InstallData implements InstallDataInterface
 {
@@ -77,12 +79,14 @@ class InstallData implements InstallDataInterface
         $attributeSet     = $this->attributeSetFactory->create();
         $attributeGroupId = $attributeSet->getDefaultGroupId($attributeSetId);
 
+        $useTwoFactorCode = IsUsingTwoFactor::ATTRIBUTE_CODE;
+
         $customerSetup->addAttribute(
             'customer',
-            'use_two_factor_authentication',
+            $useTwoFactorCode,
             [
                 'type' => 'int',
-                'label' => 'use_two_factor_authentication',
+                'label' => $useTwoFactorCode,
                 'input' => 'boolean',
                 'source' => '',
                 'required' => true,
@@ -94,7 +98,7 @@ class InstallData implements InstallDataInterface
         );
 
 
-        $attribute = $customerSetup->getEavConfig()->getAttribute('customer', 'use_two_factor_authentication')->addData(
+        $attribute = $customerSetup->getEavConfig()->getAttribute('customer', $useTwoFactorCode)->addData(
             [
                 'attribute_set_id' => $attributeSetId,
                 'attribute_group_id' => $attributeGroupId,
@@ -107,13 +111,14 @@ class InstallData implements InstallDataInterface
         );
         $attribute->save();
 
+        $secretCode = TwoFactorSecret::ATTRIBUTE_CODE;
 
         $customerSetup->addAttribute(
             'customer',
-            'two_factor_secret',
+            $secretCode,
             [
                 'type' => 'varchar',
-                'label' => 'two_factor_secret',
+                'label' => $secretCode,
                 'input' => 'text',
                 'source' => '',
                 'required' => false,

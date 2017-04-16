@@ -1,5 +1,7 @@
 <?php
-/** @var \Rossmitchell\Twofactor\Block\Customer\Account\Edit\UseTwoFactor $block */ ?>
+/** @var \Rossmitchell\Twofactor\Block\Customer\Account\Edit\UseTwoFactor $block */
+$customer = $block->getCustomer();
+?>
 <fieldset class="fieldset create account" data-hasrequired="<?php /* @escapeNotVerified */
 echo __('* Required Fields') ?>">
     <legend class="legend">
@@ -14,8 +16,8 @@ echo __('* Required Fields') ?>">
         </label>
         <div class="control">
             <select id="use_two_factor_authentication" name="use_two_factor_authentication" class="select">
-                <option value="0"<?php echo $block->getSelectedForNo(); ?>>No</option>
-                <option value="1"<?php echo $block->getSelectedForYes(); ?>>Yes</option>
+                <option value="0"<?php echo $block->getSelectedForNo($customer); ?>>No</option>
+                <option value="1"<?php echo $block->getSelectedForYes($customer); ?>>Yes</option>
             </select>
         </div>
     </div>

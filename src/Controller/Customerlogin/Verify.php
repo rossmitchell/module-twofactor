@@ -21,45 +21,65 @@
 
 namespace Rossmitchell\Twofactor\Controller\Customerlogin;
 
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\View\Result\PageFactory;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
-use PragmaRX\Google2FA\Google2FA;
-use Rossmitchell\Twofactor\Model\Customer\Secret;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
+use Rossmitchell\Twofactor\Model\Customer\Getter;
+use Rossmitchell\Twofactor\Model\Customer\IsVerified;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Verify as GoogleVerify;
+use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 
 class Verify extends Action
 {
 
-    protected $resultPageFactory;
     /**
-     * @var Secret
+     * @var TwoFactorSecret
      */
     private $secret;
     /**
      * @var GoogleVerify
      */
     private $verify;
+    /**
+     * @var Getter
+     */
+    private $customerGetter;
+    /**
+     * @var TwoFactorUrls
+     */
+    private $twoFactorUrls;
+    /**
+     * @var IsVerified
+     */
+    private $isVerified;
 
     /**
      * Constructor
      *
-     * @param Context      $context
-     * @param PageFactory  $resultPageFactory
-     * @param Secret       $secret
-     * @param GoogleVerify $verify
-     *
-     * @internal param Google2FA $google2FA
+     * @param Context         $context
+     * @param Getter          $customerGetter
+     * @param TwoFactorSecret $secret
+     * @param GoogleVerify    $verify
+     * @param TwoFactorUrls   $twoFactorUrls
+     * @param IsVerified      $isVerified
      */
-    public function __construct(Context $context, PageFactory $resultPageFactory, Secret $secret, GoogleVerify $verify)
-    {
-        $this->resultPageFactory = $resultPageFactory;
+    public function __construct(
+        Context $context,
+        Getter $customerGetter,
+        TwoFactorSecret $secret,
+        GoogleVerify $verify,
+        TwoFactorUrls $twoFactorUrls,
+        IsVerified $isVerified
+    ) {
         parent::__construct($context);
-        $this->secret = $secret;
-        $this->verify = $verify;
+        $this->secret         = $secret;
+        $this->verify         = $verify;
+        $this->customerGetter = $customerGetter;
+        $this->twoFactorUrls  = $twoFactorUrls;
+        $this->isVerified     = $isVerified;
     }
 
     /**
@@ -70,34 +90,60 @@ class Verify extends Action
      */
     public function execute()
     {
-        $secret = $this->getRequest()->getParam('secret');
+        $secret             = $this->getRequest()->getParam('secret');
+        $customer           = $this->customerGetter->getCustomer();
+        $verificationPassed = $this->verifySecret($customer, $secret);
 
-        $customerSecret = $this->secret->getSecret();
+        if ($verificationPassed === false) {
+            return $this->handleError();
+        }
+
+        return $this->handleSuccess();
+    }
+
+    private function verifySecret(CustomerInterface $customer, $postedSecret)
+    {
+        $customerSecret = $this->secret->getValue($customer);
         try {
-            $verify = $this->verify->verify($customerSecret, $secret);
+            $verified = $this->verify->verify($customerSecret, $postedSecret);
         } catch (InvalidCharactersException $exception) {
-            $verify = false;
+            $verified = false;
         }
 
-        $resultPage = $this->resultPageFactory->create();
+        return $verified;
+    }
 
-        /** @var Messages $messageBlock */
-        $messageBlock = $resultPage->getLayout()->createBlock(
-            'Magento\Framework\View\Element\Messages',
-            'answer'
-        );
-        if ($verify === true) {
-            $messageBlock->addSuccess("The code was correct");
-        } else {
-            $messageBlock->addError('The code was incorrect');
-        }
+    private function handleSuccess()
+    {
+        $this->isVerified->setCustomerIsVerified();
+        $this->addSuccessMessage();
+        $accountUrl = $this->twoFactorUrls->getCustomerAccountUrl();
+        return $this->redirect($accountUrl);
+    }
 
-        $resultPage->getLayout()->setChild(
-            'content',
-            $messageBlock->getNameInLayout(),
-            'answer_alias'
-        );
+    private function handleError()
+    {
+        $this->isVerified->removeCustomerIsVerified();
+        $this->addErrorMessage();
+        $authenticateUrl = $this->twoFactorUrls->getCustomerAuthenticationUrl();
+        return $this->redirect($authenticateUrl);
+    }
 
-        return $resultPage;
+    private function addErrorMessage()
+    {
+        $this->messageManager->addErrorMessage("Two Factor Code was incorrect");
+    }
+
+    private function addSuccessMessage()
+    {
+        $this->messageManager->addSuccessMessage("Two Factor Code was correct");
+    }
+
+    private function redirect($path)
+    {
+        $redirect = $this->resultRedirectFactory->create();
+        $redirect->setPath($path);
+
+        return $redirect;
     }
 }

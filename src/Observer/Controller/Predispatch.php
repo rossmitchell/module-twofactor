@@ -21,13 +21,14 @@
 
 namespace Rossmitchell\Twofactor\Observer\Controller;
 
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\ResponseFactory;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\UrlInterface;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Getter;
-use Rossmitchell\Twofactor\Model\Customer\Session;
-use Rossmitchell\Twofactor\Model\Customer\UsingTwoFactor;
+use Rossmitchell\Twofactor\Model\Customer\IsVerified;
 
 class Predispatch implements ObserverInterface
 {
@@ -44,35 +45,35 @@ class Predispatch implements ObserverInterface
      */
     private $customerGetter;
     /**
-     * @var Session
+     * @var IsUsingTwoFactor
      */
-    private $session;
+    private $isUsingTwoFactor;
     /**
-     * @var UsingTwoFactor
+     * @var IsVerified
      */
-    private $usingTwoFactor;
+    private $isVerified;
 
     /**
      * Predispatch constructor.
      *
-     * @param ResponseFactory $responseFactory
-     * @param UrlInterface    $url
-     * @param Getter          $customerGetter
-     * @param Session         $session
-     * @param UsingTwoFactor  $usingTwoFactor
+     * @param ResponseFactory  $responseFactory
+     * @param UrlInterface     $url
+     * @param Getter           $customerGetter
+     * @param IsVerified       $isVerified
+     * @param IsUsingTwoFactor $isUsingTwoFactor
      */
     public function __construct(
         ResponseFactory $responseFactory,
         UrlInterface $url,
         Getter $customerGetter,
-        Session $session,
-        UsingTwoFactor $usingTwoFactor
+        IsVerified $isVerified,
+        IsUsingTwoFactor $isUsingTwoFactor
     ) {
-        $this->responseFactory = $responseFactory;
-        $this->url             = $url;
-        $this->customerGetter  = $customerGetter;
-        $this->session         = $session;
-        $this->usingTwoFactor  = $usingTwoFactor;
+        $this->responseFactory  = $responseFactory;
+        $this->url              = $url;
+        $this->customerGetter   = $customerGetter;
+        $this->isUsingTwoFactor = $isUsingTwoFactor;
+        $this->isVerified = $isVerified;
     }
 
     /**
@@ -90,7 +91,8 @@ class Predispatch implements ObserverInterface
             return;
         }
 
-        $this->redirectToTwoFactorCheck();
+        $controller = $observer->getEvent()->getData('controller_action');
+        $this->redirectToTwoFactorCheck($controller);
     }
 
     private function shouldTheCustomerBeRedirected()
@@ -107,7 +109,7 @@ class Predispatch implements ObserverInterface
         if ($customer === false) {
             return false;
         }
-        $usingTwoFactor = $this->usingTwoFactor->isCustomerUsingTwoFactor();
+        $usingTwoFactor = $this->isUsingTwoFactor->getValue($customer);
         if ($usingTwoFactor === false) {
             return false;
         }
@@ -125,7 +127,7 @@ class Predispatch implements ObserverInterface
 
     private function areWeOnTheVerificationPage()
     {
-        $currentUrl = trim($this->url->getCurrentUrl(), '/');
+        $currentUrl      = trim($this->url->getCurrentUrl(), '/');
         $verificationUrl = trim($this->url->getUrl('twofactor/customerlogin/verify'), '/');
 
         return ($currentUrl === $verificationUrl);
@@ -138,17 +140,15 @@ class Predispatch implements ObserverInterface
 
     private function hasTwoFactorBeenChecked()
     {
-        $checked = $this->session->getData('two_factor_passed');
+        $checked = $this->isVerified->isCustomerVerified();
 
         return ($checked === true);
     }
 
-    private function redirectToTwoFactorCheck()
+    private function redirectToTwoFactorCheck(Action $controller)
     {
         $twoFactorCheckUrl = $this->getUrlToRedirectTo();
-        $response          = $this->responseFactory->create();
+        $response          = $controller->getResponse();
         $response->setRedirect($twoFactorCheckUrl);
-        $response->sendResponse();
-        exit();
     }
 }

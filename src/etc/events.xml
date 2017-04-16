@@ -3,7 +3,7 @@
     <event name="customer_save_before">
         <observer instance="Rossmitchell\Twofactor\Observer\Customer\SaveBefore" name="rossmitchell_twofactor_observer_customer_savebefore_customer_save_before"/>
     </event>
-    <event name="controller_action_predispatch">
+    <event name="controller_action_postdispatch">
         <observer instance="Rossmitchell\Twofactor\Observer\Controller\Predispatch" name="rossmitchell_twofactor_observer_controller_action_predispatch"/>
     </event>
 </config>

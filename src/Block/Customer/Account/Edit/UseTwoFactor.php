@@ -21,49 +21,67 @@
 
 namespace Rossmitchell\Twofactor\Block\Customer\Account\Edit;
 
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
+use Rossmitchell\Twofactor\Model\Customer\Getter;
 use Rossmitchell\Twofactor\Model\Customer\UsingTwoFactor;
 
 class UseTwoFactor extends Template
 {
     /**
-     * @var UsingTwoFactor
+     * @var IsUsingTwoFactor
      */
-    private $usingTwoFactor;
+    private $isUsingTwoFactor;
+    /**
+     * @var Getter
+     */
+    private $customerGetter;
 
     /**
      * UseTwoFactor constructor.
      *
-     * @param Context $context
-     * @param UsingTwoFactor   $usingTwoFactor
+     * @param Context          $context
+     * @param IsUsingTwoFactor $isUsingTwoFactor
+     * @param Getter           $customerGetter
      * @param array            $data
      */
-    public function __construct(Context $context, UsingTwoFactor $usingTwoFactor, array $data = [])
+    public function __construct(Context $context, IsUsingTwoFactor $isUsingTwoFactor, Getter $customerGetter, array $data = [])
     {
         parent::__construct($context, $data);
-        $this->usingTwoFactor = $usingTwoFactor;
+        $this->isUsingTwoFactor = $isUsingTwoFactor;
+        $this->customerGetter = $customerGetter;
     }
 
-    public function isUsingTwoFactor()
+    public function getCustomer()
     {
-        return $this->usingTwoFactor->isCustomerUsingTwoFactor();
+        return $this->customerGetter->getCustomer();
     }
 
-    public function getSelectedForYes()
+    public function isUsingTwoFactor(CustomerInterface $customer)
     {
-        return $this->getSelectedSnippet(true);
+        if ($this->isUsingTwoFactor->hasValue($customer) === false) {
+            return false;
+        }
+
+        return ($this->isUsingTwoFactor->getValue($customer) == true);
     }
 
-    public function getSelectedForNo()
+    public function getSelectedForYes(CustomerInterface $customer)
     {
-        return $this->getSelectedSnippet(false);
+        return $this->getSelectedSnippet($customer,true);
     }
 
-    private function getSelectedSnippet($condition)
+    public function getSelectedForNo(CustomerInterface $customer)
+    {
+        return $this->getSelectedSnippet($customer,false);
+    }
+
+    private function getSelectedSnippet(CustomerInterface $customer, $condition)
     {
         $html = '';
-        if ($this->isUsingTwoFactor() === $condition) {
+        if ($this->isUsingTwoFactor($customer) === $condition) {
             $html = ' selected="selected"';
         }
 

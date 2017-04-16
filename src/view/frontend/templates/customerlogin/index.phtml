@@ -1,6 +1,7 @@
 <?php
 /** @var $block Rossmitchell\Twofactor\Block\Customerlogin\Index */
-$secret = $block->getSecret();
+$customer = $block->getCustomer();
+$secret = $block->getSecret($customer);
 
 ?>
 
