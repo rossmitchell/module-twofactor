@@ -80,8 +80,8 @@ class Postdispatch implements ObserverInterface
         $this->url              = $url;
         $this->customerGetter   = $customerGetter;
         $this->isUsingTwoFactor = $isUsingTwoFactor;
-        $this->isVerified = $isVerified;
-        $this->twoFactorUrls = $twoFactorUrls;
+        $this->isVerified       = $isVerified;
+        $this->twoFactorUrls    = $twoFactorUrls;
     }
 
     /**
@@ -105,7 +105,7 @@ class Postdispatch implements ObserverInterface
 
     private function shouldTheCustomerBeRedirected()
     {
-        if($this->areWeOnAnAllowedPage() === true) {
+        if ($this->areWeOnAnAllowedPage() === true) {
             return false;
         }
 
