@@ -30,7 +30,7 @@ class Setter
 
     public function setValue($object, $attributeCode, $value)
     {
-        if ($object instanceof  Customer) {
+        if ($object instanceof Customer) {
             $this->setValueOnModel($object, $attributeCode, $value);
 
             return;
@@ -48,7 +48,6 @@ class Setter
     private function setValueOnInterface(CustomerInterface $customer, $attributeCode, $value)
     {
         $customer->setCustomAttribute($attributeCode, $value);
-
     }
 
     private function setValueOnModel(Customer $customer, $attributeCode, $value)

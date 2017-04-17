@@ -29,7 +29,7 @@ use Magento\Framework\View\Result\PageFactory;
 class Index extends Action
 {
 
-    protected $resultPageFactory;
+    private $resultPageFactory;
 
     /**
      * Constructor
