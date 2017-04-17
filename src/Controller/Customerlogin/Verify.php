@@ -27,8 +27,9 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
-use Rossmitchell\Twofactor\Model\Customer\Getter;
-use Rossmitchell\Twofactor\Model\Customer\IsVerified;
+use Rossmitchell\Twofactor\Model\Customer\Customer;
+use Rossmitchell\Twofactor\Model\Customer\Session;
+use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Verify as GoogleVerify;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 
@@ -44,7 +45,7 @@ class Verify extends Action
      */
     private $verify;
     /**
-     * @var Getter
+     * @var Customer
      */
     private $customerGetter;
     /**
@@ -55,31 +56,38 @@ class Verify extends Action
      * @var IsVerified
      */
     private $isVerified;
+    /**
+     * @var Session
+     */
+    private $customerSession;
 
     /**
      * Constructor
      *
      * @param Context         $context
-     * @param Getter          $customerGetter
+     * @param Customer        $customerGetter
      * @param TwoFactorSecret $secret
      * @param GoogleVerify    $verify
      * @param TwoFactorUrls   $twoFactorUrls
      * @param IsVerified      $isVerified
+     * @param Session         $customerSession
      */
     public function __construct(
         Context $context,
-        Getter $customerGetter,
+        Customer $customerGetter,
         TwoFactorSecret $secret,
         GoogleVerify $verify,
         TwoFactorUrls $twoFactorUrls,
-        IsVerified $isVerified
+        IsVerified $isVerified,
+        Session $customerSession
     ) {
         parent::__construct($context);
-        $this->secret         = $secret;
-        $this->verify         = $verify;
-        $this->customerGetter = $customerGetter;
-        $this->twoFactorUrls  = $twoFactorUrls;
-        $this->isVerified     = $isVerified;
+        $this->secret          = $secret;
+        $this->verify          = $verify;
+        $this->customerGetter  = $customerGetter;
+        $this->twoFactorUrls   = $twoFactorUrls;
+        $this->isVerified      = $isVerified;
+        $this->customerSession = $customerSession;
     }
 
     /**
@@ -120,7 +128,7 @@ class Verify extends Action
 
     private function handleSuccess()
     {
-        $this->isVerified->setCustomerIsVerified();
+        $this->isVerified->setIsVerified($this->customerSession);
         $this->addSuccessMessage();
         $accountUrl = $this->twoFactorUrls->getCustomerAccountUrl();
 
@@ -135,7 +143,7 @@ class Verify extends Action
 
     private function handleError()
     {
-        $this->isVerified->removeCustomerIsVerified();
+        $this->isVerified->removeIsVerified($this->customerSession);
         $this->addErrorMessage();
         $authenticateUrl = $this->twoFactorUrls->getCustomerAuthenticationUrl();
 

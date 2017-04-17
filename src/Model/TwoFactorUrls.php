@@ -60,19 +60,52 @@ class TwoFactorUrls
         return $this->url->getUrl('customer/account/login');
     }
 
+    public function getAdminAuthenticationUrl()
+    {
+        return $this->url->getUrl('twofactor/adminlogin/index');
+    }
+
+    public function getAdminVerificationUrl()
+    {
+        return $this->url->getUrl('twofactor/adminlogin/verify');
+    }
+
+
     public function getCurrentUrl()
     {
         return $this->url->getCurrentUrl();
     }
 
-    public function areWeOnTheAuthenticationPage()
+    public function areWeOnTheAuthenticationPage($forAdmin = false)
     {
-        return $this->compareUrls($this->getCurrentUrl(), $this->getCustomerAuthenticationUrl());
+        $authenticationUrl = $this->getAuthenticationUrl($forAdmin);
+
+        return $this->compareUrls($this->getCurrentUrl(), $authenticationUrl);
     }
 
-    public function areWeOnTheVerificationPage()
+    public function getAuthenticationUrl($forAdmin = false)
     {
-        return $this->compareUrls($this->getCurrentUrl(), $this->getCustomerVerificationUrl());
+        if ($forAdmin === true) {
+            return $this->getAdminAuthenticationUrl();
+        }
+
+        return $this->getCustomerAuthenticationUrl();
+    }
+
+    public function getVerificationUrl($forAdmin = false)
+    {
+        if ($forAdmin === true) {
+            return $this->getAdminVerificationUrl();
+        }
+
+        return $this->getCustomerAuthenticationUrl();
+    }
+
+    public function areWeOnTheVerificationPage($forAdmin = false)
+    {
+        $verificationUrl = $this->getVerificationUrl($forAdmin);
+
+        return $this->compareUrls($this->getCurrentUrl(), $verificationUrl);
     }
 
     private function compareUrls($firstUrl, $secondUrl)

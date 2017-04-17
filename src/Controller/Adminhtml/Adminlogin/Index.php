@@ -34,7 +34,7 @@ class Index extends Action
     /**
      * Constructor
      *
-     * @param Context  $context
+     * @param Context     $context
      * @param PageFactory $resultPageFactory
      */
     public function __construct(
@@ -53,5 +53,10 @@ class Index extends Action
     public function execute()
     {
         return $this->resultPageFactory->create();
+    }
+
+    protected function _isAllowed()
+    {
+        return true;
     }
 }

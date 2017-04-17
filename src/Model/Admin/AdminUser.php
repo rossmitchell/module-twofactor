@@ -19,46 +19,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Model\Customer;
+namespace Rossmitchell\Twofactor\Model\Admin;
 
-class IsVerified
+use Magento\User\Model\User;
+
+class AdminUser
 {
-    const TWO_FACTOR_SESSION_KEY = 'two_factor_verified';
-
     /**
      * @var Session
      */
-    private $customerSession;
+    private $adminSession;
 
     /**
-     * IsVerified constructor.
+     * AdminUser constructor.
      *
-     * @param Session $customerSession
+     * @param Session $adminSession
      */
-    public function __construct(Session $customerSession)
+    public function __construct(Session $adminSession)
     {
-        $this->customerSession = $customerSession;
+        $this->adminSession = $adminSession;
     }
 
-    public function isCustomerVerified()
+    /**
+     * @return User
+     * @throws \Exception
+     */
+    public function getAdminUser()
     {
-        if ($this->customerSession->hasData(self::TWO_FACTOR_SESSION_KEY) === false) {
-            return false;
+        $adminUser = $this->adminSession->getData('user');
+        if (!$adminUser instanceof User) {
+            throw new \Exception("No admin user found");
         }
 
-        $sessionValue = $this->customerSession->getData(self::TWO_FACTOR_SESSION_KEY);
-        $isVerified   = ($sessionValue === true);
-
-        return $isVerified;
+        return $adminUser;
     }
 
-    public function setCustomerIsVerified()
+    public function hasAdminUser()
     {
-        $this->customerSession->setData(self::TWO_FACTOR_SESSION_KEY, true);
-    }
-
-    public function removeCustomerIsVerified()
-    {
-        $this->customerSession->unsetData(self::TWO_FACTOR_SESSION_KEY);
+        return ($this->adminSession->hasData('user') === true);
     }
 }

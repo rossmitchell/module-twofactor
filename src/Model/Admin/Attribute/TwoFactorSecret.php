@@ -19,43 +19,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Model\Customer;
+namespace Rossmitchell\Twofactor\Model\Admin\Attribute;
 
-use Magento\Catalog\Model\Session\Proxy;
-use Rossmitchell\Twofactor\Interfaces\SessionInterface;
-use Rossmitchell\Twofactor\Traits\SessionTrait;
+use Magento\User\Model\User;
 
-class Session implements SessionInterface
+class TwoFactorSecret
 {
-    use SessionTrait;
+    const ATTRIBUTE_CODE = 'two_factor_secret';
 
-    /**
-     * @var Proxy
-     */
-    private $customerSession;
-
-    /**
-     * Session constructor.
-     *
-     * @param Proxy $customerSession
-     */
-    public function __construct(Proxy $customerSession)
+    public function getValue(User $user)
     {
-        $this->customerSession = $customerSession;
+        return $user->getData(self::ATTRIBUTE_CODE);
     }
 
-    public function getSession()
+    public function setValue(User $user, $value)
     {
-        $session = $this->customerSession;
-        $this->startSession($session);
-
-        return $session;
-    }
-
-    private function startSession(Proxy $session)
-    {
-        if ($session->isSessionExists() === false) {
-            $session->start();
-        }
+        $user->setData(self::ATTRIBUTE_CODE, $value);
     }
 }

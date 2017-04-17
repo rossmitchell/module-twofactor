@@ -24,7 +24,7 @@ namespace Rossmitchell\Twofactor\Model\Customer;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 
-class Getter
+class Customer
 {
     /**
      * @var CustomerRepositoryInterface

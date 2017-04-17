@@ -19,43 +19,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Model\Customer;
+namespace Rossmitchell\Twofactor\Interfaces;
 
-use Magento\Catalog\Model\Session\Proxy;
-use Rossmitchell\Twofactor\Interfaces\SessionInterface;
-use Rossmitchell\Twofactor\Traits\SessionTrait;
-
-class Session implements SessionInterface
+interface SessionInterface
 {
-    use SessionTrait;
 
-    /**
-     * @var Proxy
-     */
-    private $customerSession;
+    public function setData($key, $value);
 
-    /**
-     * Session constructor.
-     *
-     * @param Proxy $customerSession
-     */
-    public function __construct(Proxy $customerSession)
-    {
-        $this->customerSession = $customerSession;
-    }
+    public function getData($key);
 
-    public function getSession()
-    {
-        $session = $this->customerSession;
-        $this->startSession($session);
+    public function unsetData($key);
 
-        return $session;
-    }
-
-    private function startSession(Proxy $session)
-    {
-        if ($session->isSessionExists() === false) {
-            $session->start();
-        }
-    }
+    public function hasData($key);
 }

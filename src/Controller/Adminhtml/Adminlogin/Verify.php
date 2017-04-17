@@ -19,43 +19,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Model\Customer;
+namespace Rossmitchell\Twofactor\Controller\Adminhtml\Adminlogin;
 
-use Magento\Catalog\Model\Session\Proxy;
-use Rossmitchell\Twofactor\Interfaces\SessionInterface;
-use Rossmitchell\Twofactor\Traits\SessionTrait;
+use Magento\Backend\App\Action;
+use Magento\Framework\App\ResponseInterface;
 
-class Session implements SessionInterface
+class Verify extends Action
 {
-    use SessionTrait;
 
     /**
-     * @var Proxy
-     */
-    private $customerSession;
-
-    /**
-     * Session constructor.
+     * Dispatch request
      *
-     * @param Proxy $customerSession
+     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
+     * @throws \Magento\Framework\Exception\NotFoundException
      */
-    public function __construct(Proxy $customerSession)
+    public function execute()
     {
-        $this->customerSession = $customerSession;
-    }
-
-    public function getSession()
-    {
-        $session = $this->customerSession;
-        $this->startSession($session);
-
-        return $session;
-    }
-
-    private function startSession(Proxy $session)
-    {
-        if ($session->isSessionExists() === false) {
-            $session->start();
-        }
+        // TODO: Implement execute() method.
     }
 }

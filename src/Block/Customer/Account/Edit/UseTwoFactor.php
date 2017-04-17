@@ -25,7 +25,7 @@ use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
-use Rossmitchell\Twofactor\Model\Customer\Getter;
+use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\Customer\UsingTwoFactor;
 
 class UseTwoFactor extends Template
@@ -35,22 +35,22 @@ class UseTwoFactor extends Template
      */
     private $isUsingTwoFactor;
     /**
-     * @var Getter
+     * @var Customer
      */
     private $customerGetter;
 
     /**
      * UseTwoFactor constructor.
      *
-     * @param Context $context
+     * @param Context          $context
      * @param IsUsingTwoFactor $isUsingTwoFactor
-     * @param Getter $customerGetter
-     * @param array $data
+     * @param Customer         $customerGetter
+     * @param array            $data
      */
     public function __construct(
         Context $context,
         IsUsingTwoFactor $isUsingTwoFactor,
-        Getter $customerGetter,
+        Customer $customerGetter,
         array $data = []
     ) {
         parent::__construct($context, $data);

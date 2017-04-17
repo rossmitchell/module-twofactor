@@ -24,6 +24,8 @@ namespace Rossmitchell\Twofactor\Setup;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
+use Rossmitchell\Twofactor\Model\Admin\Attribute\TwoFactorSecret;
 
 class InstallSchema implements InstallSchemaInterface
 {
@@ -51,11 +53,11 @@ class InstallSchema implements InstallSchemaInterface
         $installer->endSetup();
     }
 
-    private function addUseTwoFactorColumn(SchemaSetupInterface $installer, $adminTable)
+    private function addUseTwoFactorColumn(SchemaSetupInterface $installer, $table)
     {
         $installer->getConnection()->addColumn(
-            $adminTable,
-            'use_two_factor',
+            $table,
+            IsUsingTwoFactor::ATTRIBUTE_CODE,
             [
                 'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
                 'nullable' => true,
@@ -65,11 +67,11 @@ class InstallSchema implements InstallSchemaInterface
         );
     }
 
-    private function addTwoFactorSecretColumn(SchemaSetupInterface $installer, $adminTable)
+    private function addTwoFactorSecretColumn(SchemaSetupInterface $installer, $table)
     {
         $installer->getConnection()->addColumn(
-            $adminTable,
-            'two_factor_secret',
+            $table,
+            TwoFactorSecret::ATTRIBUTE_CODE,
             [
                 'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                 'nullable' => true,

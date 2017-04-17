@@ -24,7 +24,7 @@ namespace Rossmitchell\Twofactor\Block\Customer\Account\Edit;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\View\Element\Template;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
-use Rossmitchell\Twofactor\Model\Customer\Getter;
+use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\QRCode as QRCodeGenerator;
 
 class QRCode extends Template
@@ -38,7 +38,7 @@ class QRCode extends Template
      */
     private $twoFactorSecret;
     /**
-     * @var Getter
+     * @var Customer
      */
     private $customerGetter;
 
@@ -48,14 +48,14 @@ class QRCode extends Template
      * @param Template\Context $context
      * @param QRCodeGenerator  $qRCode
      * @param TwoFactorSecret  $twoFactorSecret
-     * @param Getter           $customerGetter
+     * @param Customer         $customerGetter
      * @param array            $data
      */
     public function __construct(
         Template\Context $context,
         QRCodeGenerator $qRCode,
         TwoFactorSecret $twoFactorSecret,
-        Getter $customerGetter,
+        Customer $customerGetter,
         array $data = []
     ) {
         parent::__construct($context, $data);

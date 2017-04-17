@@ -24,7 +24,7 @@ namespace Rossmitchell\Twofactor\Block\Customerlogin;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
-use Rossmitchell\Twofactor\Model\Customer\Getter;
+use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\QRCode;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Secret;
 
@@ -43,7 +43,7 @@ class Index extends Template
      */
     private $twoFactorSecret;
     /**
-     * @var Getter
+     * @var Customer
      */
     private $customerGetter;
 
@@ -54,7 +54,7 @@ class Index extends Template
      * @param Secret          $secret
      * @param QRCode          $code
      * @param TwoFactorSecret $twoFactorSecret
-     * @param Getter          $customerGetter
+     * @param Customer        $customerGetter
      * @param array           $data
      */
     public function __construct(
@@ -62,7 +62,7 @@ class Index extends Template
         Secret $secret,
         QRCode $code,
         TwoFactorSecret $twoFactorSecret,
-        Getter $customerGetter,
+        Customer $customerGetter,
         array $data = []
     ) {
         parent::__construct($context, $data);

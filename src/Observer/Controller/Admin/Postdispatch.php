@@ -19,36 +19,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Observer\Controller;
+namespace Rossmitchell\Twofactor\Observer\Controller\Admin;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\ResponseFactory;
+use Magento\Backend\App\Action;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\UrlInterface;
-use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
-use Rossmitchell\Twofactor\Model\Customer\Getter;
-use Rossmitchell\Twofactor\Model\Customer\IsVerified;
+use Rossmitchell\Twofactor\Model\Admin\AdminUser;
+use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
+use Rossmitchell\Twofactor\Model\Admin\Session;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
+use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 
 class Postdispatch implements ObserverInterface
 {
     /**
-     * @var ResponseFactory
+     * @var AdminUser
      */
-    private $responseFactory;
-    /**
-     * @var UrlInterface
-     */
-    private $url;
-    /**
-     * @var Getter
-     */
-    private $customerGetter;
+    private $adminUser;
     /**
      * @var IsUsingTwoFactor
      */
     private $isUsingTwoFactor;
+    /**
+     * @var Session
+     */
+    private $session;
     /**
      * @var IsVerified
      */
@@ -59,27 +54,24 @@ class Postdispatch implements ObserverInterface
     private $twoFactorUrls;
 
     /**
-     * Predispatch constructor.
+     * Postdispatch constructor.
      *
-     * @param ResponseFactory  $responseFactory
-     * @param UrlInterface     $url
-     * @param Getter           $customerGetter
-     * @param IsVerified       $isVerified
+     * @param AdminUser        $adminUser
      * @param IsUsingTwoFactor $isUsingTwoFactor
+     * @param Session          $session
+     * @param IsVerified       $isVerified
      * @param TwoFactorUrls    $twoFactorUrls
      */
     public function __construct(
-        ResponseFactory $responseFactory,
-        UrlInterface $url,
-        Getter $customerGetter,
-        IsVerified $isVerified,
+        AdminUser $adminUser,
         IsUsingTwoFactor $isUsingTwoFactor,
+        Session $session,
+        IsVerified $isVerified,
         TwoFactorUrls $twoFactorUrls
     ) {
-        $this->responseFactory  = $responseFactory;
-        $this->url              = $url;
-        $this->customerGetter   = $customerGetter;
+        $this->adminUser        = $adminUser;
         $this->isUsingTwoFactor = $isUsingTwoFactor;
+        $this->session          = $session;
         $this->isVerified       = $isVerified;
         $this->twoFactorUrls    = $twoFactorUrls;
     }
@@ -91,60 +83,55 @@ class Postdispatch implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        if ($this->shouldTheCustomerBeRedirected() === false) {
+        if ($this->shouldTheUserBeRedirected() === false) {
             return;
         }
 
-        if ($this->hasTwoFactorBeenChecked() === true) {
+        if ($this->areWeOnANonRedirectingPage() === true) {
             return;
         }
 
         $controller = $observer->getEvent()->getData('controller_action');
-        $this->redirectToTwoFactorCheck($controller);
+        $this->redirectToAuthenticationPage($controller);
     }
 
-    private function shouldTheCustomerBeRedirected()
+    private function shouldTheUserBeRedirected()
     {
-        if ($this->areWeOnAnAllowedPage() === true) {
+        $adminUser = $this->adminUser;
+        if ($adminUser->hasAdminUser() === false) {
+            return false;
+        }
+        $user = $this->adminUser->getAdminUser();
+
+        if ($this->isUsingTwoFactor->getValue($user) === false) {
             return false;
         }
 
-        $customer = $this->customerGetter->getCustomer();
-        if ($customer === false) {
-            return false;
-        }
-        $usingTwoFactor = $this->isUsingTwoFactor->getValue($customer);
-        if ($usingTwoFactor === false) {
+        if ($this->isVerified->isVerified($this->session) === true) {
             return false;
         }
 
         return true;
     }
 
-    private function areWeOnAnAllowedPage()
+    private function areWeOnANonRedirectingPage()
     {
-        $twoFactorUrls = $this->twoFactorUrls;
-        if ($twoFactorUrls->areWeOnTheAuthenticationPage() === true) {
+        $urls = $this->twoFactorUrls;
+
+        if ($urls->areWeOnTheAuthenticationPage(true) === true) {
             return true;
         }
 
-        if ($twoFactorUrls->areWeOnTheVerificationPage() === true) {
+        if ($urls->areWeOnTheVerificationPage(true) === true) {
             return true;
         }
 
         return false;
     }
 
-    private function hasTwoFactorBeenChecked()
+    private function redirectToAuthenticationPage(Action $controller)
     {
-        $checked = $this->isVerified->isCustomerVerified();
-
-        return ($checked === true);
-    }
-
-    private function redirectToTwoFactorCheck(Action $controller)
-    {
-        $twoFactorCheckUrl = $this->twoFactorUrls->getCustomerAuthenticationUrl();
+        $twoFactorCheckUrl = $this->twoFactorUrls->getAdminVerificationUrl();
         $response          = $controller->getResponse();
         $response->setRedirect($twoFactorCheckUrl);
     }

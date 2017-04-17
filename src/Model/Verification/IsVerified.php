@@ -19,43 +19,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Model\Customer;
+namespace Rossmitchell\Twofactor\Model\Verification;
 
-use Magento\Catalog\Model\Session\Proxy;
 use Rossmitchell\Twofactor\Interfaces\SessionInterface;
-use Rossmitchell\Twofactor\Traits\SessionTrait;
 
-class Session implements SessionInterface
+class IsVerified
 {
-    use SessionTrait;
+    const TWO_FACTOR_SESSION_KEY = 'two_factor_verified';
 
-    /**
-     * @var Proxy
-     */
-    private $customerSession;
-
-    /**
-     * Session constructor.
-     *
-     * @param Proxy $customerSession
-     */
-    public function __construct(Proxy $customerSession)
+    public function isVerified(SessionInterface $session)
     {
-        $this->customerSession = $customerSession;
-    }
-
-    public function getSession()
-    {
-        $session = $this->customerSession;
-        $this->startSession($session);
-
-        return $session;
-    }
-
-    private function startSession(Proxy $session)
-    {
-        if ($session->isSessionExists() === false) {
-            $session->start();
+        if ($session->hasData(self::TWO_FACTOR_SESSION_KEY) === false) {
+            return false;
         }
+
+        $sessionValue = $session->getData(self::TWO_FACTOR_SESSION_KEY);
+        $isVerified   = ($sessionValue === true);
+
+        return $isVerified;
+    }
+
+    public function setIsVerified(SessionInterface $session)
+    {
+        $session->setData(self::TWO_FACTOR_SESSION_KEY, true);
+    }
+
+    public function removeIsVerified(SessionInterface $session)
+    {
+        $session->unsetData(self::TWO_FACTOR_SESSION_KEY);
     }
 }
