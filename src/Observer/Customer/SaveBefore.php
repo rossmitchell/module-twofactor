@@ -24,7 +24,8 @@ namespace Rossmitchell\Twofactor\Observer\Customer;
 use Magento\Customer\Model\Customer;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Rossmitchell\Twofactor\Model\Customer\IsVerified;
+use Rossmitchell\Twofactor\Model\Customer\Session;
+use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Secret;
 
 class SaveBefore implements ObserverInterface
@@ -37,17 +38,23 @@ class SaveBefore implements ObserverInterface
      * @var IsVerified
      */
     private $isVerified;
+    /**
+     * @var Session
+     */
+    private $session;
 
     /**
      * SaveBefore constructor.
      *
      * @param Secret     $secret
      * @param IsVerified $isVerified
+     * @param Session    $session
      */
-    public function __construct(Secret $secret, IsVerified $isVerified)
+    public function __construct(Secret $secret, IsVerified $isVerified, Session $session)
     {
         $this->secret = $secret;
         $this->isVerified = $isVerified;
+        $this->session = $session;
     }
 
     /**
@@ -95,6 +102,6 @@ class SaveBefore implements ObserverInterface
 
     private function markCustomerAsVerified()
     {
-        $this->isVerified->setCustomerIsVerified();
+        $this->isVerified->setIsVerified($this->session);
     }
 }
