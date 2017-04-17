@@ -22,22 +22,22 @@
 namespace Rossmitchell\Twofactor\Model\Customer;
 
 
-use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Catalog\Model\Session\Proxy;
 use Magento\Framework\Exception\InputException;
 
 class Session
 {
     /**
-     * @var CustomerSession
+     * @var Proxy
      */
     private $customerSession;
 
     /**
      * Session constructor.
      *
-     * @param CustomerSession $customerSession
+     * @param Proxy $customerSession
      */
-    public function __construct(CustomerSession $customerSession)
+    public function __construct(Proxy $customerSession)
     {
         $this->customerSession = $customerSession;
     }
@@ -45,16 +45,14 @@ class Session
     public function setData($key, $value)
     {
         $methodName = $this->convertKeyToMethodName('set', $key);
-        $session    = $this->customerSession;
-        $this->startSession($session);
+        $session    = $this->getSession();
         $session->$methodName($value);
     }
 
     public function getData($key)
     {
         $methodName = $this->convertKeyToMethodName('get', $key);
-        $session    = $this->customerSession;
-        $this->startSession($session);
+        $session    = $this->getSession();
 
         return $session->$methodName();
     }
@@ -62,37 +60,38 @@ class Session
     public function unsetData($key)
     {
         $methodName = $this->convertKeyToMethodName('uns', $key);
-        $session    = $this->customerSession;
-        $this->startSession($session);
+        $session    = $this->getSession();
         $session->$methodName($key);
     }
 
     public function hasData($key)
     {
         $methodName = $this->convertKeyToMethodName('has', $key);
-        $session    = $this->customerSession;
-        $this->startSession($session);
+        $session    = $this->getSession();
 
         return $session->$methodName();
     }
 
     private function convertKeyToMethodName($type, $key)
     {
-        switch ($type) {
-            case 'get':
-            case 'set':
-            case 'uns':
-            case 'has':
-                break;
-            default:
-                InputException::invalidFieldValue('type', $type);
+        $allowedMethods = ['get', 'set', 'uns', 'has'];
+        if (!in_array($type, $allowedMethods)) {
+            InputException::invalidFieldValue('type', $type);
         }
         $methodName = $type.str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
 
         return $methodName;
     }
 
-    private function startSession(CustomerSession $session)
+    private function getSession()
+    {
+        $session = $this->customerSession;
+        $this->startSession($session);
+
+        return $session;
+    }
+
+    private function startSession(Proxy $session)
     {
         if ($session->isSessionExists() === false) {
             $session->start();
