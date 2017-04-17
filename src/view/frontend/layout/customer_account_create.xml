@@ -2,7 +2,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 <body>
     <referenceContainer name="form.additional.info">
-        <block class="Magento\Framework\View\Element\Template" name="additional_info_customer_use_two_factor" template="Rossmitchell_Twofactor::customer/account/create/use_two_factor.phtml"/>
+        <block class="Rossmitchell\Twofactor\Block\Customer\Account\Create\UseTwoFactor" name="additional_info_customer_use_two_factor" template="Rossmitchell_Twofactor::customer/account/create/use_two_factor.phtml"/>
     </referenceContainer>
 </body>
 </page>

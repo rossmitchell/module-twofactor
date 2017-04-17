@@ -26,6 +26,7 @@ use Magento\Framework\App\ResponseFactory;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\UrlInterface;
+use Rossmitchell\Twofactor\Model\Config\Customer as CustomerAdmin;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\Customer\Session;
@@ -62,6 +63,10 @@ class Postdispatch implements ObserverInterface
      * @var Session
      */
     private $customerSession;
+    /**
+     * @var CustomerAdmin
+     */
+    private $customerAdmin;
 
     /**
      * Predispatch constructor.
@@ -73,6 +78,7 @@ class Postdispatch implements ObserverInterface
      * @param Session          $customerSession
      * @param IsUsingTwoFactor $isUsingTwoFactor
      * @param TwoFactorUrls    $twoFactorUrls
+     * @param CustomerAdmin    $customerAdmin
      */
     public function __construct(
         ResponseFactory $responseFactory,
@@ -81,7 +87,8 @@ class Postdispatch implements ObserverInterface
         IsVerified $isVerified,
         Session $customerSession,
         IsUsingTwoFactor $isUsingTwoFactor,
-        TwoFactorUrls $twoFactorUrls
+        TwoFactorUrls $twoFactorUrls,
+        CustomerAdmin $customerAdmin
     ) {
         $this->responseFactory  = $responseFactory;
         $this->url              = $url;
@@ -89,7 +96,8 @@ class Postdispatch implements ObserverInterface
         $this->isUsingTwoFactor = $isUsingTwoFactor;
         $this->isVerified       = $isVerified;
         $this->twoFactorUrls    = $twoFactorUrls;
-        $this->customerSession = $customerSession;
+        $this->customerSession  = $customerSession;
+        $this->customerAdmin    = $customerAdmin;
     }
 
     /**
@@ -99,6 +107,10 @@ class Postdispatch implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        if ($this->isTwoFactorEnabled() === false) {
+            return;
+        }
+
         if ($this->shouldTheCustomerBeRedirected() === false) {
             return;
         }
@@ -109,6 +121,11 @@ class Postdispatch implements ObserverInterface
 
         $controller = $observer->getEvent()->getData('controller_action');
         $this->redirectToTwoFactorCheck($controller);
+    }
+
+    private function isTwoFactorEnabled()
+    {
+        return ($this->customerAdmin->isTwoFactorEnabled() == true);
     }
 
     private function shouldTheCustomerBeRedirected()

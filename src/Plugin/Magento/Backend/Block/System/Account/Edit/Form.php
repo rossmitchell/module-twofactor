@@ -26,6 +26,7 @@ use Magento\Framework\Data\Form as OriginalForm;
 use Magento\Framework\Data\Form\Element\Fieldset;
 use Rossmitchell\Twofactor\Model\Admin\AdminUser;
 use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
+use Rossmitchell\Twofactor\Model\Config\Admin;
 
 class Form
 {
@@ -33,24 +34,37 @@ class Form
      * @var AdminUser
      */
     private $adminUser;
+    /**
+     * @var Admin
+     */
+    private $adminConfig;
 
     /**
      * Form constructor.
      *
      * @param AdminUser $adminUser
+     * @param Admin     $adminConfig
      */
-    public function __construct(AdminUser $adminUser)
+    public function __construct(AdminUser $adminUser, Admin $adminConfig)
     {
         $this->adminUser = $adminUser;
+        $this->adminConfig = $adminConfig;
     }
 
     public function beforeSetForm(OriginalClass $subject, OriginalForm $form)
     {
-        $fieldSet = $this->getFieldSetFromForm($form);
-        $this->addFieldToFieldSet($fieldSet);
-        $this->updateFormData($form, $subject);
+        if ($this->isTwoFactorEnabled() === true) {
+            $fieldSet = $this->getFieldSetFromForm($form);
+            $this->addFieldToFieldSet($fieldSet);
+            $this->updateFormData($form, $subject);
+        }
 
         return [$form];
+    }
+
+    private function isTwoFactorEnabled()
+    {
+        return ($this->adminConfig->isTwoFactorEnabled() == true);
     }
 
     /**

@@ -1,3 +1,9 @@
+<?php
+/** @var Rossmitchell\Twofactor\Block\Customer\Account\Create\UseTwoFactor $block */
+if ($block->shouldFieldBeDisplayed() !== true) {
+    return;
+}
+?>
 <fieldset class="fieldset create account" data-hasrequired="<?php /* @escapeNotVerified */
 echo __('* Required Fields') ?>">
     <legend class="legend">

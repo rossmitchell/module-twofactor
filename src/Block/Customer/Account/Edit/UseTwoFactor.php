@@ -24,6 +24,7 @@ namespace Rossmitchell\Twofactor\Block\Customer\Account\Edit;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Rossmitchell\Twofactor\Model\Config\Customer as CustomerConfig;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\Customer\UsingTwoFactor;
@@ -38,6 +39,10 @@ class UseTwoFactor extends Template
      * @var Customer
      */
     private $customerGetter;
+    /**
+     * @var CustomerConfig
+     */
+    private $customerConfig;
 
     /**
      * UseTwoFactor constructor.
@@ -45,17 +50,25 @@ class UseTwoFactor extends Template
      * @param Context          $context
      * @param IsUsingTwoFactor $isUsingTwoFactor
      * @param Customer         $customerGetter
+     * @param CustomerConfig   $customerConfig
      * @param array            $data
      */
     public function __construct(
         Context $context,
         IsUsingTwoFactor $isUsingTwoFactor,
         Customer $customerGetter,
+        CustomerConfig $customerConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->isUsingTwoFactor = $isUsingTwoFactor;
         $this->customerGetter   = $customerGetter;
+        $this->customerConfig = $customerConfig;
+    }
+
+    public function shouldBlockBeDisplayed()
+    {
+        return ($this->customerConfig->isTwoFactorEnabled() == true);
     }
 
     public function getCustomer()

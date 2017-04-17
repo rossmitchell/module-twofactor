@@ -27,6 +27,7 @@ use Magento\Framework\Event\ObserverInterface;
 use Rossmitchell\Twofactor\Model\Admin\AdminUser;
 use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Admin\Session;
+use Rossmitchell\Twofactor\Model\Config\Admin;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 
@@ -52,6 +53,10 @@ class Postdispatch implements ObserverInterface
      * @var TwoFactorUrls
      */
     private $twoFactorUrls;
+    /**
+     * @var Admin
+     */
+    private $adminConfig;
 
     /**
      * Postdispatch constructor.
@@ -61,19 +66,22 @@ class Postdispatch implements ObserverInterface
      * @param Session          $session
      * @param IsVerified       $isVerified
      * @param TwoFactorUrls    $twoFactorUrls
+     * @param Admin            $adminConfig
      */
     public function __construct(
         AdminUser $adminUser,
         IsUsingTwoFactor $isUsingTwoFactor,
         Session $session,
         IsVerified $isVerified,
-        TwoFactorUrls $twoFactorUrls
+        TwoFactorUrls $twoFactorUrls,
+        Admin $adminConfig
     ) {
         $this->adminUser        = $adminUser;
         $this->isUsingTwoFactor = $isUsingTwoFactor;
         $this->session          = $session;
         $this->isVerified       = $isVerified;
         $this->twoFactorUrls    = $twoFactorUrls;
+        $this->adminConfig      = $adminConfig;
     }
 
     /**
@@ -83,6 +91,10 @@ class Postdispatch implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        if ($this->isTwoFactorEnabled() === false) {
+            return;
+        }
+
         if ($this->shouldTheUserBeRedirected() === false) {
             return;
         }
@@ -93,6 +105,11 @@ class Postdispatch implements ObserverInterface
 
         $controller = $observer->getEvent()->getData('controller_action');
         $this->redirectToAuthenticationPage($controller);
+    }
+
+    private function isTwoFactorEnabled()
+    {
+        return ($this->adminConfig->isTwoFactorEnabled() == true);
     }
 
     private function shouldTheUserBeRedirected()

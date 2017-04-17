@@ -1,5 +1,8 @@
 <?php
 /** @var \Rossmitchell\Twofactor\Block\Customer\Account\Edit\UseTwoFactor $block */
+if ($block->shouldBlockBeDisplayed() === false) {
+    return;
+}
 $customer = $block->getCustomer();
 ?>
 <fieldset class="fieldset create account" data-hasrequired="<?php /* @escapeNotVerified */

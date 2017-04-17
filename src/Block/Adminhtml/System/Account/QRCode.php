@@ -25,6 +25,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\User\Model\User;
 use Rossmitchell\Twofactor\Model\Admin\AdminUser;
 use Rossmitchell\Twofactor\Model\Admin\Attribute\TwoFactorSecret;
+use Rossmitchell\Twofactor\Model\Config\Admin;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\QRCode as GoogleQRCode;
 
 class QRCode extends Template
@@ -41,6 +42,10 @@ class QRCode extends Template
      * @var GoogleQRCode
      */
     private $qRCode;
+    /**
+     * @var Admin
+     */
+    private $adminConfig;
 
     /**
      * QRCode constructor.
@@ -49,6 +54,7 @@ class QRCode extends Template
      * @param AdminUser        $adminUser
      * @param TwoFactorSecret  $twoFactorSecret
      * @param GoogleQRCode     $qRCode
+     * @param Admin            $adminConfig
      * @param array            $data
      */
     public function __construct(
@@ -56,12 +62,14 @@ class QRCode extends Template
         AdminUser $adminUser,
         TwoFactorSecret $twoFactorSecret,
         GoogleQRCode $qRCode,
+        Admin $adminConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->adminUser = $adminUser;
+        $this->adminUser       = $adminUser;
         $this->twoFactorSecret = $twoFactorSecret;
-        $this->qRCode = $qRCode;
+        $this->qRCode          = $qRCode;
+        $this->adminConfig     = $adminConfig;
     }
 
     public function getAdminUser()
@@ -71,14 +79,21 @@ class QRCode extends Template
 
     public function shouldQRCodeBeDisplayed(User $adminUser)
     {
+        if ($this->adminConfig->isTwoFactorEnabled() == false) {
+            return false;
+        }
+
         if ($this->getSecret($adminUser) === null) {
             return false;
         }
+
+        return true;
     }
 
     public function getQRCode(User $adminUser)
     {
         $secret = $this->getSecret($adminUser);
+
         return $this->qRCode->generateQRCode('Test Company', $adminUser->getEmail(), $secret);
     }
 

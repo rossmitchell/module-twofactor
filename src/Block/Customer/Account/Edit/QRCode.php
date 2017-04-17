@@ -23,6 +23,7 @@ namespace Rossmitchell\Twofactor\Block\Customer\Account\Edit;
 
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\View\Element\Template;
+use Rossmitchell\Twofactor\Model\Config\Customer as CustomerConfig;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\QRCode as QRCodeGenerator;
@@ -41,6 +42,10 @@ class QRCode extends Template
      * @var Customer
      */
     private $customerGetter;
+    /**
+     * @var CustomerConfig
+     */
+    private $customerConfig;
 
     /**
      * QRCode constructor.
@@ -49,19 +54,23 @@ class QRCode extends Template
      * @param QRCodeGenerator  $qRCode
      * @param TwoFactorSecret  $twoFactorSecret
      * @param Customer         $customerGetter
-     * @param array            $data
+     * @param CustomerConfig   $customerConfig
+     *
+     * @internal param array $data
      */
     public function __construct(
         Template\Context $context,
         QRCodeGenerator $qRCode,
         TwoFactorSecret $twoFactorSecret,
         Customer $customerGetter,
+        CustomerConfig $customerConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->qRCode = $qRCode;
+        $this->qRCode          = $qRCode;
         $this->twoFactorSecret = $twoFactorSecret;
-        $this->customerGetter = $customerGetter;
+        $this->customerGetter  = $customerGetter;
+        $this->customerConfig  = $customerConfig;
     }
 
     public function getCustomer()
@@ -71,6 +80,10 @@ class QRCode extends Template
 
     public function hasAQrCode(CustomerInterface $customer)
     {
+        if ($this->customerConfig->isTwoFactorEnabled() == false) {
+            return false;
+        }
+
         return $this->twoFactorSecret->hasValue($customer);
     }
 
