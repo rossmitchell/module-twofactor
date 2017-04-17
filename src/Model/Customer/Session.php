@@ -21,7 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Model\Customer;
 
-
 use Magento\Catalog\Model\Session\Proxy;
 use Magento\Framework\Exception\InputException;
 

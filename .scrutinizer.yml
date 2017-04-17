@@ -10,4 +10,4 @@ build:
             - phpcs-run --config-set installed_paths /home/scrutinizer/build/vendor/magento/marketplace-eqp/
             - phpcs-run --standard=MEQP2 --ignore=./vendor/ ./
     cache:
-        directories: [ bin/, ~/.composer/cache ]
+        directories: [ ~/.composer/cache ]
