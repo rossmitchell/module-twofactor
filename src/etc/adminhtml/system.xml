@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="two_factor" sortOrder="500" translate="label">
+            <label>Two Factor Authentication</label>
+        </tab>
+        <section id="admin_users" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label">
+            <label>Admin Users</label>
+            <tab>two_factor</tab>
+            <resource>Rossmitchell_Twofactor::config_rossmitchell_twofactor</resource>
+            <group id="details" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label">
+                <label>Details</label>
+                <field id="enable" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="select">
+                    <label>Enable For Admin Users</label>
+                    <comment>Admin Users will still have to turn this on individually</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="company_name" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="text">
+                    <label>Company Name</label>
+                    <comment>This is the Company Name that will be sent through with the QR Code</comment>
+                </field>
+            </group>
+        </section>
+        <section id="customers" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="20" translate="label">
+            <label>Customers</label>
+            <tab>two_factor</tab>
+            <resource>Rossmitchell_Twofactor::config_rossmitchell_twofactor</resource>
+            <group id="details" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label">
+                <label>Details</label>
+                <field id="enable" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Enable for Customers</label>
+                    <comment>Customers will still have to turn this on individually</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="company_name" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="text">
+                    <label>Company Name</label>
+                    <comment>This is the company name that will be sent through with the QR Code</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
