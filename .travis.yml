@@ -13,6 +13,7 @@ env:
     - PULSESTORM_PESTLE_URL=http://pestle.pulsestorm.net
     - PULSESTORM_COMPOSER_REPOSITORY_TO_TEST=https://github.com/rossmitchell/module-twofactor
     - PULSESTORM_COMPOSER_PACKAGE_TO_TEST=rossmitchell/module-twofactor
+    - MAGENTO_VERSION=2.1.6
 addons:
   hosts:
     # should match PULSESTORM_MAGE2_FAKE_URL above
@@ -40,7 +41,7 @@ before_script:
     # get latest composer
     - composer selfupdate
     # Create the composer Auth File
-    - AUTH_DIR=$HOME/.composer/auth.json php $TRAVIS_BUILD_DIR/.travis/createAuthJson.php
+    - echo "{\"http-basic\":{\"repo.magento.com\":{\"username\":\"${MAGENTO_USERNAME}\",\"password\":\"${MAGENTO_PASSWORD}\"}}}" > auth.json
     # disable xdebug for perf
     - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
     # add multiverse support to get MySQL 5.6 update apt
@@ -71,7 +72,7 @@ before_script:
     - sudo service apache2 restart
 
     # clone main magento github repository
-    - git clone https://github.com/magento/magento2
+    - composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition:${MAGENTO_VERSION} magento2
     # download latest pestle phar and install
     - curl -LO "$PULSESTORM_PESTLE_URL/pestle.phar"
     - sudo mv pestle.phar /usr/local/bin
