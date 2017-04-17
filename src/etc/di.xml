@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Backend\Block\System\Account\Edit\Form">
+        <plugin disabled="false" name="Rossmitchell_Twofactor_Plugin_Magento_Backend_Block_System_Account_Edit_Form" sortOrder="10" type="Rossmitchell\Twofactor\Plugin\Magento\Backend\Block\System\Account\Edit\Form"/>
+    </type>
+    <type name="Magento\Backend\Controller\Adminhtml\System\Account\Save">
+        <plugin name="Rossmitchell_Twofactor_Plugin_Magento_Backend_Controller_Adminhtml_System_Account_Save" disabled="false" sortOrder="10" type="Rossmitchell\Twofactor\Plugin\Magento\Backend\Controller\Adminhtml\System\Account\Save"/>
+    </type>
+</config>

@@ -1,0 +1,12 @@
+<?php
+/** @var Rossmitchell\Twofactor\Block\Adminhtml\System\Account\QRCode $block */
+$user = $block->getAdminUser();
+if ($block->shouldQRCodeBeDisplayed($user) === false) {
+    return;
+}
+?>
+
+<h2>Your QR Code is</h2>
+<p>
+    <img src="<?php echo $block->getQRCode($user); ?>" />
+</p>

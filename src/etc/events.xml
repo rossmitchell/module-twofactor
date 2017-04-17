@@ -4,6 +4,6 @@
         <observer instance="Rossmitchell\Twofactor\Observer\Customer\SaveBefore" name="rossmitchell_twofactor_observer_customer_savebefore_customer_save_before"/>
     </event>
     <event name="admin_user_save_before">
-        <observer name=""/>
+        <observer instance="Rossmitchell\Twofactor\Observer\AdminUser\SaveBefore" name="rossmitchell_twofactor_observer_adminuser_savebefore_admin_user_save_before"/>
     </event>
 </config>

@@ -29,15 +29,21 @@ class AdminUser
      * @var Session
      */
     private $adminSession;
+    /**
+     * @var \Magento\User\Model\ResourceModel\User
+     */
+    private $resorceModel;
 
     /**
      * AdminUser constructor.
      *
-     * @param Session $adminSession
+     * @param Session                                $adminSession
+     * @param \Magento\User\Model\ResourceModel\User $resourceModel
      */
-    public function __construct(Session $adminSession)
+    public function __construct(Session $adminSession, \Magento\User\Model\ResourceModel\User $resourceModel)
     {
         $this->adminSession = $adminSession;
+        $this->resorceModel = $resourceModel;
     }
 
     /**
@@ -57,5 +63,13 @@ class AdminUser
     public function hasAdminUser()
     {
         return ($this->adminSession->hasData('user') === true);
+    }
+
+    public function saveAdminUser(User $user)
+    {
+
+        if ($user->isSaveAllowed() === true) {
+            $this->resorceModel->save($user->save());
+        }
     }
 }
