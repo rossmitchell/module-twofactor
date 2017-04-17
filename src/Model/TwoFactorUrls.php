@@ -55,6 +55,11 @@ class TwoFactorUrls
         return $this->url->getUrl('customer/account/index');
     }
 
+    public function getAdminDashboardUrl()
+    {
+        return $this->url->getUrl('admin/dashboard/index');
+    }
+
     public function getCustomerLogInUrl()
     {
         return $this->url->getUrl('customer/account/login');

@@ -21,9 +21,57 @@
 
 namespace Rossmitchell\Twofactor\Block\Adminhtml\Adminlogin;
 
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\View\Element\Template;
+use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 
 class Index extends Template
 {
+    /**
+     * @var TwoFactorUrls
+     */
+    private $twoFactorUrls;
+    /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
 
+    /**
+     * Index constructor.
+     *
+     * @param Template\Context $context
+     * @param TwoFactorUrls    $twoFactorUrls
+     * @param ManagerInterface $messageManager
+     * @param array            $data
+     */
+    public function __construct(
+        Template\Context $context,
+        TwoFactorUrls $twoFactorUrls,
+        ManagerInterface $messageManager,
+        array $data = []
+    ) {
+        parent::__construct($context, $data);
+        $this->twoFactorUrls  = $twoFactorUrls;
+        $this->messageManager = $messageManager;
+    }
+
+    public function getVerificationUrl()
+    {
+        return $this->twoFactorUrls->getAuthenticationUrl(true);
+    }
+
+    public function getMessages()
+    {
+        $messages   = [];
+        $collection = $this->messageManager->getMessages(true);
+        if (null === $collection) {
+            return $messages;
+        }
+
+        foreach ($collection->getItems() as $message) {
+            $messages[] = $message->getText();
+        }
+
+        return $messages;
+    }
 }

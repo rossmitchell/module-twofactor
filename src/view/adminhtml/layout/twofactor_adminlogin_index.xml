@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
-<page layout="admin-1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page layout="admin-login" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<body>
-		<referenceContainer name="content">
+		<referenceContainer name="login.content">
 			<block class="Rossmitchell\Twofactor\Block\Adminhtml\Adminlogin\Index" name="adminlogin.index" template="Rossmitchell_Twofactor::adminlogin/index.phtml"/>
 		</referenceContainer>
 	</body>
