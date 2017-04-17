@@ -23,7 +23,9 @@ namespace Rossmitchell\Twofactor\Plugin\Magento\Backend\Block\System\Account\Edi
 
 use Magento\Backend\Block\System\Account\Edit\Form as OriginalClass;
 use Magento\Framework\Data\Form as OriginalForm;
+use Magento\Framework\Data\Form\Element\Fieldset;
 use Rossmitchell\Twofactor\Model\Admin\AdminUser;
+use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
 
 class Form
 {
@@ -42,28 +44,53 @@ class Form
         $this->adminUser = $adminUser;
     }
 
-    public function beforeSetForm(OriginalClass $subject, OriginalForm $result)
+    public function beforeSetForm(OriginalClass $subject, OriginalForm $form)
     {
-        $form     = $result;
+        $fieldSet = $this->getFieldSetFromForm($form);
+        $this->addFieldToFieldSet($fieldSet);
+        $this->updateFormData($form, $subject);
+
+        return [$form];
+    }
+
+    /**
+     * @param OriginalForm $form
+     *
+     * @return Fieldset
+     * @throws \Exception
+     */
+    private function getFieldSetFromForm(OriginalForm $form)
+    {
         $fieldSet = $form->getElement('base_fieldset');
+        if (!($fieldSet instanceof Fieldset)) {
+            throw new \Exception("The Fieldset has changed it's ID");
+        }
+
+        return $fieldSet;
+    }
+
+    private function addFieldToFieldSet(Fieldset $fieldSet)
+    {
+        $attributeCode = IsUsingTwoFactor::ATTRIBUTE_CODE;
         $fieldSet->addField(
-            'use_two_factor',
+            $attributeCode,
             'select',
             [
-                'name' => 'use_two_factor',
+                'name' => $attributeCode,
                 'label' => __('Use Two Factor for this account'),
                 'title' => __('Use Two Factor for this account'),
                 'values' => [['value' => '0', 'label' => 'No'], ['value' => '1', 'label' => 'Yes']],
                 'class' => 'select',
             ]
         );
+    }
 
+    private function updateFormData(OriginalForm $form, OriginalClass $subject)
+    {
         $user = $this->adminUser->getAdminUser();
         $user->unsetData('password');
         $userData = $user->getData();
-        unset($userData[OriginalClass::IDENTITY_VERIFICATION_PASSWORD_FIELD]);
+        unset($userData[$subject::IDENTITY_VERIFICATION_PASSWORD_FIELD]);
         $form->setValues($userData);
-
-        return [$form];
     }
 }
