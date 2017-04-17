@@ -1,17 +1,17 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
-        <admin_users>
+        <two_factor_admin_users>
             <details>
                 <enable>0</enable>
                 <company_name>Your Shop Admin</company_name>
             </details>
-        </admin_users>
-        <customers>
+        </two_factor_admin_users>
+        <two_factor_customers>
             <details>
                 <enable>0</enable>
                 <company_name>Your Shop</company_name>
             </details>
-        </customers>
+        </two_factor_customers>
     </default>
 </config>
