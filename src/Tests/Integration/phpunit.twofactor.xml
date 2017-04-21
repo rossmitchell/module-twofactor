@@ -14,13 +14,13 @@
     <testsuites>
         <!-- Memory tests run first to prevent influence of other tests on accuracy of memory measurements -->
         <testsuite name="Two Factor Integration Tests">
-            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/src/Test/Integration</directory>
+            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/src/Tests/Integration/</directory>
         </testsuite>
     </testsuites>
     <!-- Code coverage filters -->
     <filter>
         <whitelist addUncoveredFilesFromWhiteList="true">
-            <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/</directory>
+            <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/Tests/Integration/</directory>
             <exclude>
                 <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/Tests/</directory>
             </exclude>
