@@ -94,4 +94,4 @@ before_script:
 script:
     - pwd
     - ls -l
-    - cd $HOME/magento2/dev/tests/integration && ../../../vendor/bin/phpunit -c phpunit.xml
+    - cd $TRAVIS_BUILD_DIR/magento2/dev/tests/integration && ../../../vendor/bin/phpunit -c phpunit.xml
