@@ -89,9 +89,8 @@ before_script:
     # test that magento is installed
     - curl "$PULSESTORM_MAGE2_FAKE_URL/index.php" > /tmp/output.txt
     - cp vendor/$PULSESTORM_COMPOSER_PACKAGE_TO_TEST/src/Tests/Integration/phpunit.twofactor.xml dev/tests/integration/phpunit.xml
-    - pwd
+    - mysql -uroot -e 'SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION; CREATE DATABASE magento_integration_tests;'
+    - cp dev/tests/integration/etc/install-config-mysql.travis.php.dist dev/tests/integration/etc/install-config-mysql.php
 
 script:
-    - pwd
-    - ls -l
     - cd $TRAVIS_BUILD_DIR/magento2/dev/tests/integration && ../../../vendor/bin/phpunit -c phpunit.xml
