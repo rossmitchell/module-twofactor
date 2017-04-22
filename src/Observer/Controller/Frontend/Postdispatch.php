@@ -173,6 +173,5 @@ class Postdispatch implements ObserverInterface
         $twoFactorCheckUrl = $this->twoFactorUrls->getAuthenticationUrl(false);
 
         $response->setRedirect($twoFactorCheckUrl);
-        $response->send();
     }
 }
