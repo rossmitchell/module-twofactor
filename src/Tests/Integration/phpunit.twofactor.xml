@@ -20,7 +20,7 @@
     <!-- Code coverage filters -->
     <filter>
         <whitelist addUncoveredFilesFromWhiteList="true">
-            <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/Tests/Integration/</directory>
+            <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/</directory>
             <exclude>
                 <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/Tests/</directory>
             </exclude>

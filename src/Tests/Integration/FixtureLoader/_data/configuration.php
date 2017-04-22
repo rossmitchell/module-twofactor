@@ -19,33 +19,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Block\Customer\Account\Create;
-
-use Rossmitchell\Twofactor\Model\Config\Customer;
-use Magento\Framework\View\Element\Template;
-
-class UseTwoFactor extends Template
-{
-    /**
-     * @var Customer
-     */
-    private $customerConfig;
-
-    /**
-     * UseTwoFactor constructor.
-     *
-     * @param Template\Context $context
-     * @param Customer         $customerConfig
-     * @param array            $data
-     */
-    public function __construct(Template\Context $context, Customer $customerConfig, array $data = [])
-    {
-        parent::__construct($context, $data);
-        $this->customerConfig = $customerConfig;
-    }
-
-    public function shouldFieldBeDisplayed()
-    {
-        return ($this->customerConfig->isTwoFactorEnabled() == true);
-    }
-}
+$configurationData = [
+    ['key' => 'my/admin/value', 'value' => '123', 'scope' => 'default'],
+    ['key' => 'my/admin/value', 'value' => '456', 'scope' => 'website'],
+    ['key' => 'my/admin/value', 'value' => '789', 'scope' => 'store']
+];

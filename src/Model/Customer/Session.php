@@ -21,7 +21,7 @@
 
 namespace Rossmitchell\Twofactor\Model\Customer;
 
-use Magento\Catalog\Model\Session\Proxy;
+use Magento\Customer\Model\Session\Proxy;
 use Rossmitchell\Twofactor\Interfaces\SessionInterface;
 use Rossmitchell\Twofactor\Traits\SessionTrait;
 

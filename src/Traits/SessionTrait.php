@@ -37,7 +37,6 @@ trait SessionTrait
     {
         $methodName = $this->convertKeyToMethodName('get', $key);
         $session    = $this->getSession();
-
         return $session->$methodName();
     }
 

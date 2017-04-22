@@ -19,33 +19,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Block\Customer\Account\Create;
 
-use Rossmitchell\Twofactor\Model\Config\Customer;
-use Magento\Framework\View\Element\Template;
+use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Configuration;
 
-class UseTwoFactor extends Template
-{
-    /**
-     * @var Customer
-     */
-    private $customerConfig;
+if (!isset($configurationData) || !is_array($configurationData)) {
+    throw new \Exception("No Customer Data has been set");
+}
 
-    /**
-     * UseTwoFactor constructor.
-     *
-     * @param Template\Context $context
-     * @param Customer         $customerConfig
-     * @param array            $data
-     */
-    public function __construct(Template\Context $context, Customer $customerConfig, array $data = [])
-    {
-        parent::__construct($context, $data);
-        $this->customerConfig = $customerConfig;
-    }
+$configurationLoader = new Configuration($configurationData);
 
-    public function shouldFieldBeDisplayed()
-    {
-        return ($this->customerConfig->isTwoFactorEnabled() == true);
-    }
+if(!isset($action)) {
+    throw new \Exception("No action has been set");
+}
+switch ($action) {
+    case 'load':
+        $configurationLoader->loadData();
+        break;
+    case 'rollback':
+        $configurationLoader->rollBackData();
+        break;
+    default:
+        throw new Exception("Unknown action: $action");
 }

@@ -19,38 +19,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Model\Config;
+namespace Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
-
-class Customer
+trait ConfigurationLoader
 {
-    const IS_ENABLED_PATH = 'two_factor_customers/details/enable';
-    const COMPANY_NAME_PATH = 'two_factor_customers/details/company_name';
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
-     * Admin constructor.
-     *
-     * @param ScopeConfigInterface $scopeConfig
-     */
-    public function __construct(ScopeConfigInterface $scopeConfig)
+    public static function getConfigurationData()
     {
-        $this->scopeConfig = $scopeConfig;
+        require __DIR__.'/../_data/configuration.php';
+        if (!isset($configurationData)) {
+            throw new \Exception("No Customer Data has been set");
+        }
+
+        return $configurationData;
     }
 
-    public function isTwoFactorEnabled()
+    static function loadConfiguration()
     {
-        return $this->scopeConfig->getValue(self::IS_ENABLED_PATH, ScopeInterface::SCOPE_STORE);
+        echo "loading Configuration data".PHP_EOL;
+
+        $action            = 'load';
+        $configurationData = self::getConfigurationData();
+        require __DIR__.'/../_loaders/configuration.php';
     }
 
-    public function getCompanyName()
+    static function loadConfigurationRollback()
     {
-        return $this->scopeConfig->getValue(self::COMPANY_NAME_PATH, ScopeInterface::SCOPE_STORE);
+        $action            = 'rollback';
+        $configurationData = self::getConfigurationData();
+        require __DIR__.'/../_loaders/configuration.php';
     }
 }
