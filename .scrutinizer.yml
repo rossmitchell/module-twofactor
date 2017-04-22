@@ -11,3 +11,8 @@ build:
             - phpcs-run --standard=MEQP2 --ignore=./vendor/ ./
     cache:
         directories: [ ~/.composer/cache ]
+
+tools:
+    external_code_coverage:
+        timeout: 600
+        runs: 2
