@@ -21,12 +21,19 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits;
 
+use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Configuration;
+
 trait ConfigurationLoader
 {
+    public static function getConfigurationDataPath()
+    {
+        return __DIR__.'/../_data/configuration.php';
+    }
+
     public static function getConfigurationData()
     {
         $configurationData = null;
-        require __DIR__.'/../_data/configuration.php';
+        require self::getConfigurationDataPath();
         if (null === $configurationData) {
             throw new \Exception("No Customer Data has been set");
         }
@@ -36,17 +43,15 @@ trait ConfigurationLoader
 
     public static function loadConfiguration()
     {
-        echo "loading Configuration data".PHP_EOL;
-
-        $action            = 'load';
         $configurationData = self::getConfigurationData();
-        require __DIR__.'/../_loaders/configuration.php';
+        $configurationClass = new Configuration($configurationData);
+        $configurationClass->loadData();
     }
 
     public static function loadConfigurationRollback()
     {
-        $action            = 'rollback';
         $configurationData = self::getConfigurationData();
-        require __DIR__.'/../_loaders/configuration.php';
+        $configurationClass = new Configuration($configurationData);
+        $configurationClass->rollBackData();
     }
 }

@@ -19,14 +19,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
-use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
-
 $customerData = [
     [
         'websiteId' => 1,
         'id' => 1,
-        'email' => 'customer@example.com',
+        'email' => 'enabled@example.com',
         'password' => 'password',
         'groupId' => 1,
         'storeId' => 1,
@@ -40,8 +37,28 @@ $customerData = [
         'defaultShipping' => 1,
         'taxvat' => '12',
         'gender' => 0,
-        IsUsingTwoFactor::ATTRIBUTE_CODE => 1,
-        TwoFactorSecret::ATTRIBUTE_CODE => 'testcode'
+        'use_two_factor_authentication' => '1',
+        'two_factor_secret' => 'testcode',
+    ],
+    [
+        'websiteId' => 1,
+        'id' => 2,
+        'email' => 'not_enabled@example.com',
+        'password' => 'password',
+        'groupId' => 1,
+        'storeId' => 1,
+        'isActive' => 1,
+        'prefix' => 'Mr.',
+        'firstname' => 'John',
+        'middlename' => 'A',
+        'lastname' => 'Smith',
+        'suffix' => 'Esq.',
+        'defaultBilling' => 1,
+        'defaultShipping' => 1,
+        'taxvat' => '12',
+        'gender' => 0,
+        'use_two_factor_authentication' => '0',
+        'two_factor_secret' => '',
     ],
 ];
 

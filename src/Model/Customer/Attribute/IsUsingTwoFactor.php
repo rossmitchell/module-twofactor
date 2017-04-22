@@ -48,7 +48,9 @@ class IsUsingTwoFactor
 
     public function getValue($customer)
     {
-        return $this->getter->getValue($customer, self::ATTRIBUTE_CODE);
+        $value = $this->getter->getValue($customer, self::ATTRIBUTE_CODE);
+
+        return ($value == true);
     }
 
     public function setValue($customer, $value)

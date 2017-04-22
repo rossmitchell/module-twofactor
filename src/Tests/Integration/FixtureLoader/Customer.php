@@ -21,6 +21,7 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\FixtureLoader;
 
+use Magento\Customer\Model\Customer as MagentoCustomer;
 use Magento\Customer\Model\CustomerFactory;
 
 class Customer extends AbstractLoader
@@ -29,15 +30,16 @@ class Customer extends AbstractLoader
 
     public function loadData()
     {
-        echo "Loading customer Data".PHP_EOL;
+
         /** @var CustomerFactory $customerFactory */
-        $customerFactory = $this->createObject(CustomerFactory::class);
         foreach ($this->data as $customerData) {
-            $customer = $customerFactory->create();
+            $customer = $this->createObject(MagentoCustomer::class);
+            #$customer = $customerFactory->create();
+            #$customer = $customer->load($customerData['id']);
             foreach ($customerData as $key => $value) {
                 $customer->setData($key, $value);
             }
-            $customer->isObjectNew(true);
+            #$customer->isObjectNew(false);
             $customer->save();
         }
 
@@ -45,13 +47,15 @@ class Customer extends AbstractLoader
 
     public function rollBackData()
     {
-        echo "Rolling back customer Data".PHP_EOL;
-        /** @var CustomerFactory $customerFactory */
-        $customerFactory = $this->createObject(CustomerFactory::class);
+        /** @var MagentoCustomer $customer */
         $this->setSecureArea();
         foreach ($this->data as $customerData) {
-            $customer = $customerFactory->create();
-            $customer->load($customerData['id']);
+            $customer = $this->createObject(MagentoCustomer::class);
+            $customer->setWebsiteId($customerData['websiteId']);
+            $customer->loadByEmail($customerData['email']);
+            #if (!$customer->getId()) {
+            #    throw new \Exception("could not load a customer with an id of ".$customerData['id']);
+            #}
             $customer->delete();
         }
     }

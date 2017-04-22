@@ -9,12 +9,20 @@
 namespace Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits;
 
 
+use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Customer;
+
 trait CustomerLoader
 {
+    public static function getCustomerDataPath()
+    {
+        return __DIR__.'/../_data/customer.php';
+    }
+
     public static function getCustomerData()
     {
         $customerData = null;
-        require __DIR__.'/../_data/customer.php';
+        $dataFile = self::getCustomerDataPath();
+        require $dataFile;
         if (null === $customerData) {
             throw new \Exception("No Customer Data has been set");
         }
@@ -24,15 +32,15 @@ trait CustomerLoader
 
     public static function loadCustomer()
     {
-        $action       = 'load';
         $customerData = self::getCustomerData();
-        require __DIR__.'/../_loaders/customer.php';
+        $customerLoader = new Customer($customerData);
+        $customerLoader->loadData();
     }
 
     public static function loadCustomerRollback()
     {
-        $action       = 'rollback';
         $customerData = self::getCustomerData();
-        require __DIR__.'/../_loaders/customer.php';
+        $customerLoader = new Customer($customerData);
+        $customerLoader->rollBackData();
     }
 }
