@@ -31,7 +31,7 @@ class LoginEverythingEnabledTest extends AbstractController
     use CustomerLoader;
     use ConfigurationLoader;
 
-    static public function getCustomerData()
+    public static function getCustomerData()
     {
         $customerData = null;
         require __DIR__.'/_files/customer.php';
@@ -42,11 +42,11 @@ class LoginEverythingEnabledTest extends AbstractController
         return $customerData;
     }
 
-    static public function getConfigurationData()
+    public static function getConfigurationData()
     {
         $configurationData = null;
         require __DIR__.'/_files/two_factor_enabled.php';
-        if(null === $configurationData) {
+        if (null === $configurationData) {
             throw new \Exception('No Configuration data has been set');
         }
 
@@ -54,10 +54,10 @@ class LoginEverythingEnabledTest extends AbstractController
     }
 
     /**
-     * @magentoDbIsolation disabled
+     * @magentoDbIsolation   disabled
      * @magentoConfigFixture default/two_factor_customers/details/enable 1
-     * @magentoDataFixture loadCustomer
-     * @magentoDataFixture loadConfiguration
+     * @magentoDataFixture   loadCustomer
+     * @magentoDataFixture   loadConfiguration
      */
     public function testLoader()
     {
