@@ -92,7 +92,6 @@ before_script:
 
 script:
     - cd $TRAVIS_BUILD_DIR/magento2/dev/tests/integration && ../../../vendor/bin/phpunit -c $PWD/phpunit.xml --coverage-text --coverage-clover=$TRAVIS_BUILD_DIR/coverage.clover
-- phpunit
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
