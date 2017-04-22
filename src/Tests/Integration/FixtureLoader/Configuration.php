@@ -37,10 +37,10 @@ class Configuration extends AbstractLoader
             switch ($scope) {
                 case 'default':
                     $configWriter->setValue($key, $value, 'default');
-                // Intentional fall through
+                    // Intentional fall through
                 case 'website':
                     $configWriter->setValue($key, $value, 'website');
-                // Intentional fall through
+                    // Intentional fall through
                 case 'store':
                     $configWriter->setValue($key, $value, 'store');
                     break;
@@ -61,7 +61,7 @@ class Configuration extends AbstractLoader
             throw new \Exception("configData must be an array");
         }
         foreach ($this->data as $config) {
-            if(!isset($config['key']) || !isset($config['value']) || !isset($config['scope'])) {
+            if (!isset($config['key']) || !isset($config['value']) || !isset($config['scope'])) {
                 throw new \Exception('Each row must contain key, value, and scope values');
             }
         }

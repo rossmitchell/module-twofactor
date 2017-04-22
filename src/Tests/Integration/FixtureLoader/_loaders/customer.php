@@ -27,7 +27,7 @@ if (!isset($customerData) || !is_array($customerData)) {
 
 $customerLoader = new Customer($customerData);
 
-if(!isset($action)) {
+if (!isset($action)) {
     throw new \Exception("No action has been set");
 }
 switch ($action) {

@@ -28,7 +28,7 @@ if (!isset($configurationData) || !is_array($configurationData)) {
 
 $configurationLoader = new Configuration($configurationData);
 
-if(!isset($action)) {
+if (!isset($action)) {
     throw new \Exception("No action has been set");
 }
 switch ($action) {

@@ -31,7 +31,7 @@ class LoginEverythingEnabledTest extends AbstractController
     use CustomerLoader;
     use ConfigurationLoader;
 
-    static function getCustomerData()
+    static public function getCustomerData()
     {
         require __DIR__.'/_files/customer.php';
         if (!isset($customerData)) {
@@ -41,7 +41,7 @@ class LoginEverythingEnabledTest extends AbstractController
         return $customerData;
     }
 
-    static function getConfigurationData()
+    static public function getConfigurationData()
     {
         require __DIR__.'/_files/two_factor_enabled.php';
         if(!isset($configurationData)) {

@@ -37,6 +37,6 @@ $customerData = [
         'defaultBilling' => 1,
         'defaultShipping' => 1,
         'taxvat' => '12',
-        'gender' => 0
+        'gender' => 0,
     ],
 ];

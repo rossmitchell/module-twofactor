@@ -22,5 +22,5 @@
 $configurationData = [
     ['key' => 'my/admin/value', 'value' => '123', 'scope' => 'default'],
     ['key' => 'my/admin/value', 'value' => '456', 'scope' => 'website'],
-    ['key' => 'my/admin/value', 'value' => '789', 'scope' => 'store']
+    ['key' => 'my/admin/value', 'value' => '789', 'scope' => 'store'],
 ];

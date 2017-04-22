@@ -13,8 +13,8 @@ trait CustomerLoader
 {
     public static function getCustomerData()
     {
-        require __DIR__ . '/../_data/customer.php';
-        if(!isset($customerData)) {
+        require __DIR__.'/../_data/customer.php';
+        if (!isset($customerData)) {
             throw new \Exception("No Customer Data has been set");
         }
 
@@ -23,15 +23,15 @@ trait CustomerLoader
 
     static function loadCustomer()
     {
-        $action = 'load';
+        $action       = 'load';
         $customerData = self::getCustomerData();
-        require __DIR__ . '/../_loaders/customer.php';
+        require __DIR__.'/../_loaders/customer.php';
     }
 
     static function loadCustomerRollback()
     {
-        $action = 'rollback';
+        $action       = 'rollback';
         $customerData = self::getCustomerData();
-        require __DIR__ . '/../_loaders/customer.php';
+        require __DIR__.'/../_loaders/customer.php';
     }
 }
