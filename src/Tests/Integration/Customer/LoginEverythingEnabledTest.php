@@ -33,8 +33,9 @@ class LoginEverythingEnabledTest extends AbstractController
 
     static public function getCustomerData()
     {
+        $customerData = null;
         require __DIR__.'/_files/customer.php';
-        if (!isset($customerData)) {
+        if (null === $customerData) {
             throw new \Exception("No Customer Data has been set");
         }
 
@@ -43,8 +44,9 @@ class LoginEverythingEnabledTest extends AbstractController
 
     static public function getConfigurationData()
     {
+        $configurationData = null;
         require __DIR__.'/_files/two_factor_enabled.php';
-        if(!isset($configurationData)) {
+        if(null === $configurationData) {
             throw new \Exception('No Configuration data has been set');
         }
 

@@ -25,15 +25,16 @@ trait ConfigurationLoader
 {
     public static function getConfigurationData()
     {
+        $configurationData = null;
         require __DIR__.'/../_data/configuration.php';
-        if (!isset($configurationData)) {
+        if (null === $configurationData) {
             throw new \Exception("No Customer Data has been set");
         }
 
         return $configurationData;
     }
 
-    static function loadConfiguration()
+    public static function loadConfiguration()
     {
         echo "loading Configuration data".PHP_EOL;
 
@@ -42,7 +43,7 @@ trait ConfigurationLoader
         require __DIR__.'/../_loaders/configuration.php';
     }
 
-    static function loadConfigurationRollback()
+    public static function loadConfigurationRollback()
     {
         $action            = 'rollback';
         $configurationData = self::getConfigurationData();
