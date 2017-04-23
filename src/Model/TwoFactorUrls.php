@@ -103,7 +103,7 @@ class TwoFactorUrls
             return $this->getAdminVerificationUrl();
         }
 
-        return $this->getCustomerAuthenticationUrl();
+        return $this->getCustomerVerificationUrl();
     }
 
     public function areWeOnTheVerificationPage($forAdmin = false)
@@ -115,8 +115,15 @@ class TwoFactorUrls
 
     private function compareUrls($firstUrl, $secondUrl)
     {
-        $charList = '\t\n\r/';
+        return ($this->cleanUrl($firstUrl) === $this->cleanUrl($secondUrl));
+    }
 
-        return (trim($firstUrl, $charList) === trim($secondUrl, $charList));
+    private function cleanUrl($url)
+    {
+        $parts = parse_url($url);
+        $cleanUrl = $parts['host'] . '/' . $parts['path'];
+        $noRewriteUrl = str_replace('/index.php', '', $cleanUrl);
+
+        return trim($noRewriteUrl, '\t\n\r/');
     }
 }

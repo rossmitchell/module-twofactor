@@ -41,7 +41,7 @@ class ShouldNeverRedirectTest extends AbstractTestClass
     public function testCustomerOptsInTwoFactorEnabled()
     {
         $this->setPostParams('optin@example.com','1');
-        $this->dispatch('customer/account/createPost');
+        $this->dispatch('/customer/account/createPost');
         $this->assertRedirect($this->stringContains('customer/account/'));
         $this->assertSessionMessages(
             $this->equalTo(['Thank you for registering with Main Website Store.']),
@@ -56,7 +56,7 @@ class ShouldNeverRedirectTest extends AbstractTestClass
     public function testCustomerOptsOutTwoFactorEnabled()
     {
         $this->setPostParams('optout@example.com', '0');
-        $this->dispatch('customer/account/createPost');
+        $this->dispatch('/customer/account/createPost');
         $this->assertRedirect($this->stringContains('customer/account/'));
         $this->assertSessionMessages(
             $this->equalTo(['Thank you for registering with Main Website Store.']),
@@ -70,7 +70,7 @@ class ShouldNeverRedirectTest extends AbstractTestClass
     public function testCustomerOptsInTwoFactorDisabled()
     {
         $this->setPostParams('optin@example.com','1');
-        $this->dispatch('customer/account/createPost');
+        $this->dispatch('/customer/account/createPost');
         $this->assertRedirect($this->stringContains('customer/account/'));
         $this->assertSessionMessages(
             $this->equalTo(['Thank you for registering with Main Website Store.']),
@@ -84,7 +84,7 @@ class ShouldNeverRedirectTest extends AbstractTestClass
     public function testCustomerOptsOutTwoFactorDisabled()
     {
         $this->setPostParams('optout@example.com', '0');
-        $this->dispatch('customer/account/createPost');
+        $this->dispatch('/customer/account/createPost');
         $this->assertRedirect($this->stringContains('customer/account/'));
         $this->assertSessionMessages(
             $this->equalTo(['Thank you for registering with Main Website Store.']),

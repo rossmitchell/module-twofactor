@@ -19,15 +19,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Tests\Integration\Customer\LoginRedirection;
+namespace Rossmitchell\Twofactor\Tests\Integration\Customer\EnterCodePage;
 
 use Rossmitchell\Twofactor\Tests\Integration\Abstracts\AbstractTestClass;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\ConfigurationLoader;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\CustomerLoader;
 
-class DisabledForSystemDisableForCustomerTest extends AbstractTestClass
+class EnabledForSystemEnabledForCustomerTest extends AbstractTestClass
 {
-
     use CustomerLoader;
     use ConfigurationLoader;
 
@@ -38,28 +37,21 @@ class DisabledForSystemDisableForCustomerTest extends AbstractTestClass
 
     public static function getConfigurationDataPath()
     {
-        return __DIR__.'/../_files/two_factor_disabled.php';
+        return __DIR__.'/../_files/two_factor_enabled.php';
     }
 
     /**
-     * @magentoDbIsolation enabled
+     * @magentoDbIsolation   enabled
      * @magentoDataFixture   loadCustomer
      * @magentoDataFixture   loadConfiguration
      */
-    public function testNoRedirectToVerification()
+    public function testPageLoadsCorrectly()
     {
-        $this->getRequest()->setMethod('POST')->setPostValue(
-            [
-                'form_key' => $this->getFormKey(),
-                'login' => [
-                    'username' => 'enabled@example.com',
-                    'password' => 'password',
-                ],
-            ]
-        );
-        $this->dispatch('/customer/account/loginPost');
-
-        $this->assertRedirect($this->stringContains('customer/account'));
+        $this->login('enabled@example.com');
+        $this->dispatch('/twofactor/customerlogin/index');
+        $responseBody = $this->getResponse()->getBody();
+        $this->assertFalse($this->getResponse()->isRedirect());
+        $this->assertContains('Two Factor Authentication', $responseBody);
+        $this->assertContains('Please enter your code', $responseBody);
     }
-
 }

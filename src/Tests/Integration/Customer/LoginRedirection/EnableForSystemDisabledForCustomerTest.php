@@ -57,7 +57,7 @@ class EnableForSystemDisabledForCustomerTest extends AbstractTestClass
                 ],
             ]
         );
-        $this->dispatch('customer/account/loginPost');
+        $this->dispatch('/customer/account/loginPost');
 
         $this->assertRedirect($this->stringContains('customer/account'));
     }

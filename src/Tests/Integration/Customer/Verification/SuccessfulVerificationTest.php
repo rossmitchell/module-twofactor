@@ -53,7 +53,7 @@ class SuccessfulVerificationTest extends AbstractTestClass
         $this->getRequest()
             ->setMethod('POST')
             ->setParam('secret', $this->getValidCode('WSQO22WRQ4MRQG2SW3YTSVCLCGKCPSWG'));
-        $this->dispatch('twofactor/customerlogin/verify');
+        $this->dispatch('/twofactor/customerlogin/verify');
 
         $this->assertRedirect($this->stringContains('customer/account'));
     }

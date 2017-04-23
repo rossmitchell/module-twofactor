@@ -52,7 +52,7 @@ class InvalidCodeTest extends AbstractTestClass
         $this->getRequest()
             ->setMethod('POST')
             ->setParam('secret', 'notarealcode');
-        $this->dispatch('twofactor/customerlogin/verify');
+        $this->dispatch('/twofactor/customerlogin/verify');
 
         $this->assertRedirect($this->stringContains('twofactor/customerlogin/index'));
     }

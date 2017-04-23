@@ -39,12 +39,10 @@ class RedirectToHomeWhenDisabledTest extends AbstractTestClass
      */
     public function testRedirectWhenDisabled()
     {
-        $homeUrl = $this->getRequest()->getRequestUri();
         $this->getRequest()
             ->setMethod('POST')
             ->setParam('secret', 'notarealcode');
-        $this->dispatch('twofactor/customerlogin/verify');
-
+        $this->dispatch('/twofactor/customerlogin/verify');
 
         $this->assertRedirect($this->stringEndsWith('index.php/'));
     }
