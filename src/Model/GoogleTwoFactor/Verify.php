@@ -42,6 +42,7 @@ class Verify
 
     public function verify($userSecret, $secret)
     {
+        echo PHP_EOL . $userSecret . PHP_EOL;
         $valid = $this->google2FA->verifyKey($userSecret, $secret);
 
         return $valid;

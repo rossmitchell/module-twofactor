@@ -22,19 +22,19 @@
 namespace Rossmitchell\Twofactor\Controller\Customerlogin;
 
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
+use Rossmitchell\Twofactor\Model\Config\Customer as CustomerAdmin;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\Customer\Session;
-use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Verify as GoogleVerify;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
-use Rossmitchell\Twofactor\Model\Config\Customer as CustomerAdmin;
+use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 
-class Verify extends Action
+class Verify extends AbstractController
 {
 
     /**
@@ -45,10 +45,6 @@ class Verify extends Action
      * @var GoogleVerify
      */
     private $verify;
-    /**
-     * @var Customer
-     */
-    private $customerGetter;
     /**
      * @var TwoFactorUrls
      */
@@ -61,22 +57,19 @@ class Verify extends Action
      * @var Session
      */
     private $customerSession;
-    /**
-     * @var CustomerAdmin
-     */
-    private $customerAdmin;
 
     /**
      * Constructor
      *
-     * @param Context         $context
-     * @param Customer        $customerGetter
-     * @param TwoFactorSecret $secret
-     * @param GoogleVerify    $verify
-     * @param TwoFactorUrls   $twoFactorUrls
-     * @param IsVerified      $isVerified
-     * @param Session         $customerSession
-     * @param CustomerAdmin   $customerAdmin
+     * @param Context          $context
+     * @param Customer         $customerGetter
+     * @param TwoFactorSecret  $secret
+     * @param GoogleVerify     $verify
+     * @param TwoFactorUrls    $twoFactorUrls
+     * @param IsVerified       $isVerified
+     * @param Session          $customerSession
+     * @param CustomerAdmin    $customerAdmin
+     * @param IsUsingTwoFactor $isUsingTwoFactor
      */
     public function __construct(
         Context $context,
@@ -86,16 +79,15 @@ class Verify extends Action
         TwoFactorUrls $twoFactorUrls,
         IsVerified $isVerified,
         Session $customerSession,
-        CustomerAdmin $customerAdmin
+        CustomerAdmin $customerAdmin,
+        IsUsingTwoFactor $isUsingTwoFactor
     ) {
-        parent::__construct($context);
+        parent::__construct($context, $customerAdmin, $customerGetter, $twoFactorUrls, $isUsingTwoFactor);
         $this->secret          = $secret;
         $this->verify          = $verify;
-        $this->customerGetter  = $customerGetter;
         $this->twoFactorUrls   = $twoFactorUrls;
         $this->isVerified      = $isVerified;
         $this->customerSession = $customerSession;
-        $this->customerAdmin   = $customerAdmin;
     }
 
     /**
@@ -106,17 +98,12 @@ class Verify extends Action
      */
     public function execute()
     {
-        if ($this->isEnabled() === false) {
-            return $this->handleDisabled();
+        if ($this->shouldActionBeRun() === false) {
+            return $this->getRedirectAction();
         }
 
         $secret   = $this->getRequest()->getParam('secret');
-        $customer = $this->customerGetter->getCustomer();
-
-        if ($customer === false) {
-            return $this->handleMissingCustomer();
-        }
-
+        $customer = $this->getCustomer();
         $verificationPassed = $this->verifySecret($customer, $secret);
 
         if ($verificationPassed === false) {
@@ -124,16 +111,6 @@ class Verify extends Action
         }
 
         return $this->handleSuccess();
-    }
-
-    private function isEnabled()
-    {
-        return ($this->customerAdmin->isTwoFactorEnabled() == true);
-    }
-
-    private function handleDisabled()
-    {
-        return $this->redirect('/');
     }
 
     private function verifySecret(CustomerInterface $customer, $postedSecret)
@@ -157,13 +134,6 @@ class Verify extends Action
         return $this->redirect($accountUrl);
     }
 
-    private function handleMissingCustomer()
-    {
-        $loginUrl = $this->twoFactorUrls->getCustomerLogInUrl();
-
-        return $this->redirect($loginUrl);
-    }
-
     private function handleError()
     {
         $this->isVerified->removeIsVerified($this->customerSession);
@@ -181,13 +151,5 @@ class Verify extends Action
     private function addSuccessMessage()
     {
         $this->messageManager->addSuccessMessage("Two Factor Code was correct");
-    }
-
-    private function redirect($path)
-    {
-        $redirect = $this->resultRedirectFactory->create();
-        $redirect->setPath($path);
-
-        return $redirect;
     }
 }

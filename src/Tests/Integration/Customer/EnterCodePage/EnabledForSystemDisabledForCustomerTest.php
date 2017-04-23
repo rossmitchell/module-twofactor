@@ -19,31 +19,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Tests\Integration\Customer\Verification;
+namespace Rossmitchell\Twofactor\Tests\Integration\Customer\EnterCodePage;
 
 use Rossmitchell\Twofactor\Tests\Integration\Abstracts\AbstractTestClass;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\ConfigurationLoader;
+use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\CustomerLoader;
 
-class RedirectToHomeWhenDisabledTest extends AbstractTestClass
+class EnabledForSystemDisabledForCustomerTest extends AbstractTestClass
 {
+    use CustomerLoader;
     use ConfigurationLoader;
+
+    public static function getCustomerDataPath()
+    {
+        return __DIR__.'/../_files/customer.php';
+    }
 
     public static function getConfigurationDataPath()
     {
-        return __DIR__.'/../_files/two_factor_disabled.php';
+        return __DIR__.'/../_files/two_factor_enabled.php';
     }
 
     /**
      * @magentoDbIsolation   enabled
+     * @magentoDataFixture   loadCustomer
      * @magentoDataFixture   loadConfiguration
      */
-    public function testRedirectWhenDisabled()
+    public function testPageLoadsCorrectly()
     {
-        $this->getRequest()
-            ->setMethod('POST')
-            ->setParam('secret', 'notarealcode');
-        $this->dispatch('/twofactor/customerlogin/verify');
-
+        $this->login('not_enabled@example.com');
+        $this->dispatch('/twofactor/customerlogin/index');
         $this->assertRedirectsToHomePage();
     }
 }

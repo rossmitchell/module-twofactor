@@ -64,7 +64,10 @@ class AbstractTestClass extends AbstractController
         }
 
         return $this->_objectManager->get($className);
+    }
 
-
+    public function assertRedirectsToHomePage()
+    {
+        $this->assertRedirect($this->stringEndsWith('index.php/'));
     }
 }

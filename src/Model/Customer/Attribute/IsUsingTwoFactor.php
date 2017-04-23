@@ -48,6 +48,10 @@ class IsUsingTwoFactor
 
     public function getValue($customer)
     {
+        if ($this->hasValue($customer) === false) {
+            return false;
+        }
+
         $value = $this->getter->getValue($customer, self::ATTRIBUTE_CODE);
 
         return ($value == true);

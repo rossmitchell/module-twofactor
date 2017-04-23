@@ -21,28 +21,39 @@
 
 namespace Rossmitchell\Twofactor\Controller\Customerlogin;
 
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\PageFactory;
+use Rossmitchell\Twofactor\Model\Config\Customer as CustomerAdmin;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
+use Rossmitchell\Twofactor\Model\Customer\Customer;
+use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 
-class Index extends Action
+class Index extends AbstractController
 {
-
+    /** @var PageFactory  */
     private $resultPageFactory;
 
     /**
-     * Constructor
+     * Index constructor.
      *
-     * @param Context  $context
-     * @param PageFactory $resultPageFactory
+     * @param Context          $context
+     * @param CustomerAdmin    $customerAdmin
+     * @param Customer         $customerGetter
+     * @param TwoFactorUrls    $twoFactorUrls
+     * @param IsUsingTwoFactor $isUsingTwoFactor
+     * @param PageFactory      $resultPageFactory
      */
     public function __construct(
         Context $context,
+        CustomerAdmin $customerAdmin,
+        Customer $customerGetter,
+        TwoFactorUrls $twoFactorUrls,
+        IsUsingTwoFactor $isUsingTwoFactor,
         PageFactory $resultPageFactory
     ) {
+        parent::__construct($context, $customerAdmin, $customerGetter, $twoFactorUrls, $isUsingTwoFactor);
         $this->resultPageFactory = $resultPageFactory;
-        parent::__construct($context);
     }
 
     /**
@@ -52,6 +63,10 @@ class Index extends Action
      */
     public function execute()
     {
+        if ($this->shouldActionBeRun() === false) {
+            return $this->getRedirectAction();
+        }
+
         return $this->resultPageFactory->create();
     }
 }
