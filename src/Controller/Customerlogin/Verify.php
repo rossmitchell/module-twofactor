@@ -32,6 +32,7 @@ use Rossmitchell\Twofactor\Model\Customer\Session;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Verify as GoogleVerify;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
+use Rossmitchell\Twofactor\Model\Config\Customer as CustomerAdmin;
 
 class Verify extends Action
 {
@@ -60,6 +61,10 @@ class Verify extends Action
      * @var Session
      */
     private $customerSession;
+    /**
+     * @var CustomerAdmin
+     */
+    private $customerAdmin;
 
     /**
      * Constructor
@@ -71,6 +76,7 @@ class Verify extends Action
      * @param TwoFactorUrls   $twoFactorUrls
      * @param IsVerified      $isVerified
      * @param Session         $customerSession
+     * @param CustomerAdmin   $customerAdmin
      */
     public function __construct(
         Context $context,
@@ -79,7 +85,8 @@ class Verify extends Action
         GoogleVerify $verify,
         TwoFactorUrls $twoFactorUrls,
         IsVerified $isVerified,
-        Session $customerSession
+        Session $customerSession,
+        CustomerAdmin $customerAdmin
     ) {
         parent::__construct($context);
         $this->secret          = $secret;
@@ -88,6 +95,7 @@ class Verify extends Action
         $this->twoFactorUrls   = $twoFactorUrls;
         $this->isVerified      = $isVerified;
         $this->customerSession = $customerSession;
+        $this->customerAdmin   = $customerAdmin;
     }
 
     /**
@@ -98,6 +106,10 @@ class Verify extends Action
      */
     public function execute()
     {
+        if ($this->isEnabled() === false) {
+            return $this->handleDisabled();
+        }
+
         $secret   = $this->getRequest()->getParam('secret');
         $customer = $this->customerGetter->getCustomer();
 
@@ -112,6 +124,16 @@ class Verify extends Action
         }
 
         return $this->handleSuccess();
+    }
+
+    private function isEnabled()
+    {
+        return ($this->customerAdmin->isTwoFactorEnabled() == true);
+    }
+
+    private function handleDisabled()
+    {
+        return $this->redirect('/');
     }
 
     private function verifySecret(CustomerInterface $customer, $postedSecret)
@@ -138,7 +160,8 @@ class Verify extends Action
     private function handleMissingCustomer()
     {
         $loginUrl = $this->twoFactorUrls->getCustomerLogInUrl();
-        $this->redirect($loginUrl);
+
+        return $this->redirect($loginUrl);
     }
 
     private function handleError()

@@ -38,7 +38,7 @@ $customerData = [
         'taxvat' => '12',
         'gender' => 0,
         'use_two_factor_authentication' => '1',
-        'two_factor_secret' => 'testcode',
+        'two_factor_secret' => 'WSQO22WRQ4MRQG2SW3YTSVCLCGKCPSWG',
     ],
     [
         'websiteId' => 1,
