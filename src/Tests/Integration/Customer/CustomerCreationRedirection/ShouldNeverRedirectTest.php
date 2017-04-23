@@ -36,7 +36,6 @@ class ShouldNeverRedirectTest extends AbstractTestClass
 
     /**
      * @magentoDbIsolation enabled
-     * @magentoAppIsolation enabled
      * @magentoDataFixture   loadConfiguration
      */
     public function testCustomerOptsInTwoFactorEnabled()
@@ -52,7 +51,6 @@ class ShouldNeverRedirectTest extends AbstractTestClass
 
     /**
      * @magentoDbIsolation enabled
-     * @magentoAppIsolation enabled
      * @magentoDataFixture   loadConfiguration
      */
     public function testCustomerOptsOutTwoFactorEnabled()
@@ -68,7 +66,6 @@ class ShouldNeverRedirectTest extends AbstractTestClass
 
     /**
      * @magentoDbIsolation enabled
-     * @magentoAppIsolation enabled
      */
     public function testCustomerOptsInTwoFactorDisabled()
     {
@@ -83,7 +80,6 @@ class ShouldNeverRedirectTest extends AbstractTestClass
 
     /**
      * @magentoDbIsolation enabled
-     * @magentoAppIsolation enabled
      */
     public function testCustomerOptsOutTwoFactorDisabled()
     {

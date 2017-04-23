@@ -43,7 +43,6 @@ class EnableForSystemDisabledForCustomerTest extends AbstractTestClass
 
     /**
      * @magentoDbIsolation enabled
-     * @magentoAppIsolation enabled
      * @magentoDataFixture   loadCustomer
      * @magentoDataFixture   loadConfiguration
      */
