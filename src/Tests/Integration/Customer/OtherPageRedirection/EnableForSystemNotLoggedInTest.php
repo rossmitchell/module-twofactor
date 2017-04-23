@@ -52,5 +52,4 @@ class EnableForSystemNotLoggedInTest extends AbstractTestClass
 
         $this->assertFalse($this->getResponse()->isRedirect());
     }
-
 }

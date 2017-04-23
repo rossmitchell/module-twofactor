@@ -68,13 +68,13 @@ abstract class AbstractController extends Action
 
     public function shouldActionBeRun()
     {
-        if($this->isEnabled() === false) {
+        if ($this->isEnabled() === false) {
             $this->redirectAction = $this->handleDisabled();
 
             return false;
         }
 
-        if($this->getCustomer() === false) {
+        if ($this->getCustomer() === false) {
             $this->redirectAction = $this->handleMissingCustomer();
 
             return false;
@@ -106,7 +106,7 @@ abstract class AbstractController extends Action
 
     public function getCustomer()
     {
-        if(null === $this->customerModel) {
+        if (null === $this->customerModel) {
             $this->customerModel = $this->customerGetter->getCustomer();
         }
 

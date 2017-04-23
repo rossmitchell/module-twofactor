@@ -61,5 +61,4 @@ class DisabledForSystemDisableForCustomerTest extends AbstractTestClass
 
         $this->assertRedirect($this->stringContains('customer/account'));
     }
-
 }

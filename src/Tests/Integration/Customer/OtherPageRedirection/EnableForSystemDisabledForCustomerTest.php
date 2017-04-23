@@ -52,7 +52,5 @@ class EnableForSystemDisabledForCustomerTest extends AbstractTestClass
         $this->dispatch('/');
 
         $this->assertFalse($this->getResponse()->isRedirect());
-
     }
-
 }

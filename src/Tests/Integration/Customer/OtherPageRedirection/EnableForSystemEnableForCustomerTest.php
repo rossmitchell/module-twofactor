@@ -53,5 +53,4 @@ class EnableForSystemEnableForCustomerTest extends AbstractTestClass
 
         $this->assertRedirect($this->stringContains('twofactor/customerlogin/index'));
     }
-
 }

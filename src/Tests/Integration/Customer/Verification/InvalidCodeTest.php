@@ -21,7 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\Customer\Verification;
 
-
 use Rossmitchell\Twofactor\Tests\Integration\Abstracts\AbstractTestClass;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\ConfigurationLoader;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\CustomerLoader;

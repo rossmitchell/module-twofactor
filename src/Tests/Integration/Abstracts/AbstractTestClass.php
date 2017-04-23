@@ -52,7 +52,7 @@ class AbstractTestClass extends AbstractController
         $customer = $this->createObject(Customer::class);
         $customer->setWebsiteId($websiteId);
         $customerId = $customer->loadByEmail($customerEmail);
-        if($session->loginById($customerId->getId()) === false) {
+        if ($session->loginById($customerId->getId()) === false) {
             throw new \Exception("Could not log customer in");
         }
     }

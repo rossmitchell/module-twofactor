@@ -42,7 +42,6 @@ class Customer extends AbstractLoader
             #$customer->isObjectNew(false);
             $customer->save();
         }
-
     }
 
     public function rollBackData()

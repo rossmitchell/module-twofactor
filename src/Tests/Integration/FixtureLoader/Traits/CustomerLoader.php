@@ -8,7 +8,6 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits;
 
-
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Customer;
 
 trait CustomerLoader

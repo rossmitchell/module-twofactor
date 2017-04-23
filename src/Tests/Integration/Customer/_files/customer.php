@@ -61,5 +61,3 @@ $customerData = [
         'two_factor_secret' => '',
     ],
 ];
-
-

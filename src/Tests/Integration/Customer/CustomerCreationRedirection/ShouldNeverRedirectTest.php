@@ -40,7 +40,7 @@ class ShouldNeverRedirectTest extends AbstractTestClass
      */
     public function testCustomerOptsInTwoFactorEnabled()
     {
-        $this->setPostParams('optin@example.com','1');
+        $this->setPostParams('optin@example.com', '1');
         $this->dispatch('/customer/account/createPost');
         $this->assertRedirect($this->stringContains('customer/account/'));
         $this->assertSessionMessages(
@@ -69,7 +69,7 @@ class ShouldNeverRedirectTest extends AbstractTestClass
      */
     public function testCustomerOptsInTwoFactorDisabled()
     {
-        $this->setPostParams('optin@example.com','1');
+        $this->setPostParams('optin@example.com', '1');
         $this->dispatch('/customer/account/createPost');
         $this->assertRedirect($this->stringContains('customer/account/'));
         $this->assertSessionMessages(
