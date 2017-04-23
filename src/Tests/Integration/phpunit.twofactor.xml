@@ -19,7 +19,7 @@
     </testsuites>
     <!-- Code coverage filters -->
     <filter>
-        <whitelist addUncoveredFilesFromWhiteList="true">
+        <whitelist addUncoveredFilesFromWhiteList="false">
             <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/</directory>
             <exclude>
                 <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/Tests/</directory>
