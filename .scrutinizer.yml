@@ -2,6 +2,8 @@ checks:
     php: true
 
 build:
+    environment:
+        php: '7.0.8'
     dependencies:
         override:
             - { command: 'mkdir -p app/etc && rm -rf ./vendor/ && composer install --no-interaction', idle_timeout: 600 }
