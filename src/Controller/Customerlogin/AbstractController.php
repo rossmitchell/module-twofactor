@@ -27,6 +27,7 @@ use Rossmitchell\Twofactor\Model\Config\Customer as CustomerAdmin;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
+use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 
 abstract class AbstractController extends Action
 {
@@ -39,10 +40,6 @@ abstract class AbstractController extends Action
      * @var Customer
      */
     private $customerGetter;
-    /**
-     * @var TwoFactorUrls
-     */
-    private $twoFactorUrls;
 
     private $redirectAction;
 
@@ -51,19 +48,31 @@ abstract class AbstractController extends Action
      * @var IsUsingTwoFactor
      */
     private $isUsingTwoFactor;
+    /**
+     * @var Fetcher
+     */
+    private $fetcher;
 
+    /**
+     * AbstractController constructor.
+     * @param Context $context
+     * @param CustomerAdmin $customerAdmin
+     * @param Customer $customerGetter
+     * @param Fetcher $fetcher
+     * @param IsUsingTwoFactor $isUsingTwoFactor
+     */
     public function __construct(
         Context $context,
         CustomerAdmin $customerAdmin,
         Customer $customerGetter,
-        TwoFactorUrls $twoFactorUrls,
+        Fetcher $fetcher,
         IsUsingTwoFactor $isUsingTwoFactor
     ) {
         parent::__construct($context);
         $this->customerAdmin  = $customerAdmin;
         $this->customerGetter = $customerGetter;
-        $this->twoFactorUrls  = $twoFactorUrls;
         $this->isUsingTwoFactor = $isUsingTwoFactor;
+        $this->fetcher = $fetcher;
     }
 
     public function shouldActionBeRun()
@@ -115,7 +124,7 @@ abstract class AbstractController extends Action
 
     private function handleMissingCustomer()
     {
-        $loginUrl = $this->twoFactorUrls->getCustomerLogInUrl();
+        $loginUrl = $this->fetcher->getCustomerLogInUrl();
 
         return $this->redirect($loginUrl);
     }

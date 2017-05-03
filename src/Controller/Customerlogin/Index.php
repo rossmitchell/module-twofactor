@@ -28,6 +28,7 @@ use Rossmitchell\Twofactor\Model\Config\Customer as CustomerAdmin;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
+use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 
 class Index extends AbstractController
 {
@@ -37,22 +38,22 @@ class Index extends AbstractController
     /**
      * Index constructor.
      *
-     * @param Context          $context
-     * @param CustomerAdmin    $customerAdmin
-     * @param Customer         $customerGetter
-     * @param TwoFactorUrls    $twoFactorUrls
+     * @param Context $context
+     * @param CustomerAdmin $customerAdmin
+     * @param Customer $customerGetter
+     * @param Fetcher $fetcher
      * @param IsUsingTwoFactor $isUsingTwoFactor
-     * @param PageFactory      $resultPageFactory
+     * @param PageFactory $resultPageFactory
      */
     public function __construct(
         Context $context,
         CustomerAdmin $customerAdmin,
         Customer $customerGetter,
-        TwoFactorUrls $twoFactorUrls,
+        Fetcher $fetcher,
         IsUsingTwoFactor $isUsingTwoFactor,
         PageFactory $resultPageFactory
     ) {
-        parent::__construct($context, $customerAdmin, $customerGetter, $twoFactorUrls, $isUsingTwoFactor);
+        parent::__construct($context, $customerAdmin, $customerGetter, $fetcher, $isUsingTwoFactor);
         $this->resultPageFactory = $resultPageFactory;
     }
 

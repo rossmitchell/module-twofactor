@@ -30,6 +30,7 @@ use Rossmitchell\Twofactor\Model\Admin\Attribute\TwoFactorSecret;
 use Rossmitchell\Twofactor\Model\Admin\Session;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Verify as GoogleVerify;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
+use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 
 class Verify extends Action
@@ -55,20 +56,20 @@ class Verify extends Action
      */
     private $adminSession;
     /**
-     * @var TwoFactorUrls
+     * @var Fetcher
      */
-    private $twoFactorUrls;
+    private $fetcher;
 
     /**
      * Verify constructor.
      *
-     * @param Context         $context
-     * @param AdminUser       $adminUser
+     * @param Context $context
+     * @param AdminUser $adminUser
      * @param TwoFactorSecret $twoFactorSecret
-     * @param GoogleVerify    $verify
-     * @param IsVerified      $isVerified
-     * @param Session         $adminSession
-     * @param TwoFactorUrls   $twoFactorUrls
+     * @param GoogleVerify $verify
+     * @param IsVerified $isVerified
+     * @param Session $adminSession
+     * @param Fetcher $fetcher
      */
     public function __construct(
         Context $context,
@@ -77,7 +78,7 @@ class Verify extends Action
         GoogleVerify $verify,
         IsVerified $isVerified,
         Session $adminSession,
-        TwoFactorUrls $twoFactorUrls
+        Fetcher $fetcher
     ) {
         parent::__construct($context);
         $this->adminUser       = $adminUser;
@@ -85,7 +86,7 @@ class Verify extends Action
         $this->verify          = $verify;
         $this->isVerified      = $isVerified;
         $this->adminSession = $adminSession;
-        $this->twoFactorUrls = $twoFactorUrls;
+        $this->fetcher = $fetcher;
     }
 
     /**
@@ -124,7 +125,7 @@ class Verify extends Action
     {
         $this->isVerified->removeIsVerified($this->adminSession);
         $this->addErrorMessage();
-        $authenticateUrl = $this->twoFactorUrls->getAuthenticationUrl(true);
+        $authenticateUrl = $this->fetcher->getAuthenticationUrl(true);
 
         return $this->redirect($authenticateUrl);
     }
@@ -137,7 +138,7 @@ class Verify extends Action
     private function handleSuccess()
     {
         $this->isVerified->setIsVerified($this->adminSession);
-        $accountUrl = $this->twoFactorUrls->getAdminDashboardUrl();
+        $accountUrl = $this->fetcher->getAdminDashboardUrl();
 
         return $this->redirect($accountUrl);
     }

@@ -30,9 +30,22 @@ use Rossmitchell\Twofactor\Model\Config\Customer as CustomerAdmin;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\Customer\Session;
+use Rossmitchell\Twofactor\Model\Urls\Checker;
+use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 
+/**
+ * Class Postdispatch
+ *
+ * This is call after the page response has been generated, but before it has been sent through to the user. There are a
+ * couple of benefits to calling the method at this point rather than before the response has been generated. First, it
+ * gets called as soon as the customer logs in, which should save a redirect, and it also means that everything has
+ * already been instantiated, so I don't have to worry about the session issues that can crop up when a method is called
+ * to early.
+ *
+ * @TODO: This method is really quite complicate3d and should be refactored into separate classes
+ */
 class Postdispatch implements ObserverInterface
 {
     /**
@@ -56,10 +69,6 @@ class Postdispatch implements ObserverInterface
      */
     private $isVerified;
     /**
-     * @var TwoFactorUrls
-     */
-    private $twoFactorUrls;
-    /**
      * @var Session
      */
     private $customerSession;
@@ -67,18 +76,27 @@ class Postdispatch implements ObserverInterface
      * @var CustomerAdmin
      */
     private $customerAdmin;
+    /**
+     * @var Fetcher
+     */
+    private $fetcher;
+    /**
+     * @var Checker
+     */
+    private $checker;
 
     /**
      * Predispatch constructor.
      *
-     * @param ResponseFactory  $responseFactory
-     * @param UrlInterface     $url
-     * @param Customer         $customerGetter
-     * @param IsVerified       $isVerified
-     * @param Session          $customerSession
+     * @param ResponseFactory $responseFactory
+     * @param UrlInterface $url
+     * @param Customer $customerGetter
+     * @param IsVerified $isVerified
+     * @param Session $customerSession
      * @param IsUsingTwoFactor $isUsingTwoFactor
-     * @param TwoFactorUrls    $twoFactorUrls
-     * @param CustomerAdmin    $customerAdmin
+     * @param CustomerAdmin $customerAdmin
+     * @param Fetcher $fetcher
+     * @param Checker $checker
      */
     public function __construct(
         ResponseFactory $responseFactory,
@@ -87,27 +105,34 @@ class Postdispatch implements ObserverInterface
         IsVerified $isVerified,
         Session $customerSession,
         IsUsingTwoFactor $isUsingTwoFactor,
-        TwoFactorUrls $twoFactorUrls,
-        CustomerAdmin $customerAdmin
+        CustomerAdmin $customerAdmin,
+        Fetcher $fetcher,
+        Checker $checker
     ) {
         $this->responseFactory  = $responseFactory;
         $this->url              = $url;
         $this->customerGetter   = $customerGetter;
         $this->isUsingTwoFactor = $isUsingTwoFactor;
         $this->isVerified       = $isVerified;
-        $this->twoFactorUrls    = $twoFactorUrls;
         $this->customerSession  = $customerSession;
         $this->customerAdmin    = $customerAdmin;
+        $this->fetcher = $fetcher;
+        $this->checker = $checker;
     }
 
     /**
+     * This is the observer method. It *now* listens for the controller_front_send_response_before event, and really
+     * should be renamed
+     *
+     * @TODO: Rename the class so it matches the event
+     *
      * @param Observer $observer
      *
      * @return void
      */
     public function execute(Observer $observer)
     {
-        if ($this->isTwoFactorEnabled() === false) {
+        if ($this->customerAdmin->isTwoFactorEnabled() != true) {
             return;
         }
 
@@ -123,11 +148,16 @@ class Postdispatch implements ObserverInterface
         $this->redirectToTwoFactorCheck($controller);
     }
 
-    private function isTwoFactorEnabled()
-    {
-        return ($this->customerAdmin->isTwoFactorEnabled() == true);
-    }
-
+    /**
+     * This checks to see if the customer is on a page that shouldn't be redirected, if we actually have a customer, and
+     * if so does that customer have two fact enabled. Very similar checks are done in the admin observer and this is
+     * one of the methods that I want to refactor, once the test coverage is high enough to let me do this with
+     * confidence
+     *
+     * @TODO: Refactor this
+     *
+     * @return bool
+     */
     private function shouldTheCustomerBeRedirected()
     {
         if ($this->areWeOnAnAllowedPage() === true) {
@@ -146,9 +176,17 @@ class Postdispatch implements ObserverInterface
         return true;
     }
 
+    /**
+     * Checks if we are on the authentication or verification page. This code is duplicated in the admin observer, other
+     * than forAdmin flag and can be refactored
+     *
+     * @TODO: move this to either the Checker class or somewhere else
+     *
+     * @return bool
+     */
     private function areWeOnAnAllowedPage()
     {
-        $twoFactorUrls = $this->twoFactorUrls;
+        $twoFactorUrls = $this->checker;
         if ($twoFactorUrls->areWeOnTheAuthenticationPage(false) === true) {
             return true;
         }
@@ -160,6 +198,11 @@ class Postdispatch implements ObserverInterface
         return false;
     }
 
+    /**
+     * Checks the session to see if the verification flag has been set. Can be refactored
+     *
+     * @return bool
+     */
     private function hasTwoFactorBeenChecked()
     {
         $session = $this->customerSession;
@@ -168,9 +211,14 @@ class Postdispatch implements ObserverInterface
         return ($checked === true);
     }
 
+    /**
+     * Redirects the customer to two factor authentication page, i.e. where they need to enter in their code./
+     *
+     * @param $response
+     */
     private function redirectToTwoFactorCheck($response)
     {
-        $twoFactorCheckUrl = $this->twoFactorUrls->getAuthenticationUrl(false);
+        $twoFactorCheckUrl = $this->fetcher->getAuthenticationUrl(false);
 
         $response->setRedirect($twoFactorCheckUrl);
     }

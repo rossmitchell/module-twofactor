@@ -29,6 +29,8 @@ use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Admin\Session;
 use Rossmitchell\Twofactor\Model\Config\Admin;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
+use Rossmitchell\Twofactor\Model\Urls\Checker;
+use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 
 class Postdispatch implements ObserverInterface
@@ -50,38 +52,45 @@ class Postdispatch implements ObserverInterface
      */
     private $isVerified;
     /**
-     * @var TwoFactorUrls
-     */
-    private $twoFactorUrls;
-    /**
      * @var Admin
      */
     private $adminConfig;
+    /**
+     * @var Fetcher
+     */
+    private $fetcher;
+    /**
+     * @var Checker
+     */
+    private $checker;
 
     /**
      * Postdispatch constructor.
      *
-     * @param AdminUser        $adminUser
+     * @param AdminUser $adminUser
      * @param IsUsingTwoFactor $isUsingTwoFactor
-     * @param Session          $session
-     * @param IsVerified       $isVerified
-     * @param TwoFactorUrls    $twoFactorUrls
-     * @param Admin            $adminConfig
+     * @param Session $session
+     * @param IsVerified $isVerified
+     * @param Fetcher $fetcher
+     * @param Checker $checker
+     * @param Admin $adminConfig
      */
     public function __construct(
         AdminUser $adminUser,
         IsUsingTwoFactor $isUsingTwoFactor,
         Session $session,
         IsVerified $isVerified,
-        TwoFactorUrls $twoFactorUrls,
+        Fetcher $fetcher,
+        Checker $checker,
         Admin $adminConfig
     ) {
         $this->adminUser        = $adminUser;
         $this->isUsingTwoFactor = $isUsingTwoFactor;
         $this->session          = $session;
         $this->isVerified       = $isVerified;
-        $this->twoFactorUrls    = $twoFactorUrls;
         $this->adminConfig      = $adminConfig;
+        $this->checker          = $checker;
+        $this->fetcher          = $fetcher;
     }
 
     /**
@@ -133,7 +142,7 @@ class Postdispatch implements ObserverInterface
 
     private function areWeOnANonRedirectingPage()
     {
-        $urls = $this->twoFactorUrls;
+        $urls = $this->checker;
 
         if ($urls->areWeOnTheAuthenticationPage(true) === true) {
             return true;
@@ -148,7 +157,7 @@ class Postdispatch implements ObserverInterface
 
     private function redirectToAuthenticationPage(Action $controller)
     {
-        $twoFactorCheckUrl = $this->twoFactorUrls->getAdminAuthenticationUrl();
+        $twoFactorCheckUrl = $this->fetcher->getAdminAuthenticationUrl();
         $response          = $controller->getResponse();
         $response->setRedirect($twoFactorCheckUrl);
     }

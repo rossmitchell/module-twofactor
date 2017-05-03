@@ -32,6 +32,7 @@ use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\Customer\Session;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Verify as GoogleVerify;
 use Rossmitchell\Twofactor\Model\TwoFactorUrls;
+use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 
 class Verify extends AbstractController
@@ -46,9 +47,9 @@ class Verify extends AbstractController
      */
     private $verify;
     /**
-     * @var TwoFactorUrls
+     * @var Fetcher
      */
-    private $twoFactorUrls;
+    private $fetcher;
     /**
      * @var IsVerified
      */
@@ -61,14 +62,14 @@ class Verify extends AbstractController
     /**
      * Constructor
      *
-     * @param Context          $context
-     * @param Customer         $customerGetter
-     * @param TwoFactorSecret  $secret
-     * @param GoogleVerify     $verify
-     * @param TwoFactorUrls    $twoFactorUrls
-     * @param IsVerified       $isVerified
-     * @param Session          $customerSession
-     * @param CustomerAdmin    $customerAdmin
+     * @param Context $context
+     * @param Customer $customerGetter
+     * @param TwoFactorSecret $secret
+     * @param GoogleVerify $verify
+     * @param Fetcher $fetcher
+     * @param IsVerified $isVerified
+     * @param Session $customerSession
+     * @param CustomerAdmin $customerAdmin
      * @param IsUsingTwoFactor $isUsingTwoFactor
      */
     public function __construct(
@@ -76,16 +77,16 @@ class Verify extends AbstractController
         Customer $customerGetter,
         TwoFactorSecret $secret,
         GoogleVerify $verify,
-        TwoFactorUrls $twoFactorUrls,
+        Fetcher $fetcher,
         IsVerified $isVerified,
         Session $customerSession,
         CustomerAdmin $customerAdmin,
         IsUsingTwoFactor $isUsingTwoFactor
     ) {
-        parent::__construct($context, $customerAdmin, $customerGetter, $twoFactorUrls, $isUsingTwoFactor);
+        parent::__construct($context, $customerAdmin, $customerGetter, $fetcher, $isUsingTwoFactor);
         $this->secret          = $secret;
         $this->verify          = $verify;
-        $this->twoFactorUrls   = $twoFactorUrls;
+        $this->fetcher         = $fetcher;
         $this->isVerified      = $isVerified;
         $this->customerSession = $customerSession;
     }
@@ -129,7 +130,7 @@ class Verify extends AbstractController
     {
         $this->isVerified->setIsVerified($this->customerSession);
         $this->addSuccessMessage();
-        $accountUrl = $this->twoFactorUrls->getCustomerAccountUrl();
+        $accountUrl = $this->fetcher->getCustomerAccountUrl();
 
         return $this->redirect($accountUrl);
     }
@@ -138,7 +139,7 @@ class Verify extends AbstractController
     {
         $this->isVerified->removeIsVerified($this->customerSession);
         $this->addErrorMessage();
-        $authenticateUrl = $this->twoFactorUrls->getCustomerAuthenticationUrl();
+        $authenticateUrl = $this->fetcher->getAuthenticationUrl();
 
         return $this->redirect($authenticateUrl);
     }
