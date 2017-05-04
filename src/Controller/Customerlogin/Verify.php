@@ -31,7 +31,6 @@ use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
 use Rossmitchell\Twofactor\Model\Customer\Session;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Verify as GoogleVerify;
-use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 

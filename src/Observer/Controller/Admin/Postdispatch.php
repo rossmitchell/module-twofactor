@@ -28,7 +28,6 @@ use Rossmitchell\Twofactor\Model\Admin\AdminUser;
 use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Admin\Session;
 use Rossmitchell\Twofactor\Model\Config\Admin;
-use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 use Rossmitchell\Twofactor\Model\Urls\Checker;
 use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
