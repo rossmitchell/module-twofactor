@@ -157,7 +157,7 @@ class Postdispatch implements ObserverInterface
 
     private function redirectToAuthenticationPage(Action $controller)
     {
-        $twoFactorCheckUrl = $this->fetcher->getAdminAuthenticationUrl();
+        $twoFactorCheckUrl = $this->fetcher->getAuthenticationUrl(true);
         $response          = $controller->getResponse();
         $response->setRedirect($twoFactorCheckUrl);
     }
