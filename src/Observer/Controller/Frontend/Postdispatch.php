@@ -44,7 +44,7 @@ use Rossmitchell\Twofactor\Model\TwoFactorUrls;
  * already been instantiated, so I don't have to worry about the session issues that can crop up when a method is called
  * to early.
  *
- * @TODO: This method is really quite complicate3d and should be refactored into separate classes
+ * @TODO: This method is really quite complicated and should be refactored into separate classes
  */
 class Postdispatch implements ObserverInterface
 {

@@ -25,8 +25,12 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\PageFactory;
+use Rossmitchell\Twofactor\Model\Config\Admin as UserAdmin;
+use Rossmitchell\Twofactor\Model\Admin\AdminUser;
+use Rossmitchell\Twofactor\Model\Urls\Fetcher;
+use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
 
-class Index extends Action
+class Index extends AbstractController
 {
 
     private $resultPageFactory;
@@ -34,15 +38,23 @@ class Index extends Action
     /**
      * Constructor
      *
-     * @param Context     $context
-     * @param PageFactory $resultPageFactory
+     * @param Context          $context
+     * @param UserAdmin        $userAdmin
+     * @param AdminUser        $adminGetter
+     * @param Fetcher          $fetcher
+     * @param IsUsingTwoFactor $isUsingTwoFactor
+     * @param PageFactory      $resultPageFactory
      */
     public function __construct(
         Context $context,
+        UserAdmin $userAdmin,
+        AdminUser $adminGetter,
+        Fetcher $fetcher,
+        IsUsingTwoFactor $isUsingTwoFactor,
         PageFactory $resultPageFactory
     ) {
+        parent::__construct($context, $userAdmin, $adminGetter, $fetcher, $isUsingTwoFactor);
         $this->resultPageFactory = $resultPageFactory;
-        parent::__construct($context);
     }
 
     /**
@@ -52,6 +64,9 @@ class Index extends Action
      */
     public function execute()
     {
+        if ($this->shouldActionBeRun() === false) {
+            return $this->getRedirectAction();
+        }
         return $this->resultPageFactory->create();
     }
 

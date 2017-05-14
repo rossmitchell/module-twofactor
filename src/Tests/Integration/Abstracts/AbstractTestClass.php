@@ -25,13 +25,19 @@ use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Data\Form\FormKey;
 use Magento\TestFramework\TestCase\AbstractController;
+use Magento\Backend\Model\Auth\Session\Proxy;
+use Magento\User\Model\User;
 
 class AbstractTestClass extends AbstractController
 {
 
     public function getFormKey()
     {
-        return $this->createObject(FormKey::class)->getFormKey();
+        $formKeyClass = $this->createObject(FormKey::class, false);
+        $formKey      = $formKeyClass->getFormKey();
+        $formKeyClass->set($formKey);
+
+        return $formKey;
     }
 
     /**
@@ -57,6 +63,19 @@ class AbstractTestClass extends AbstractController
         }
     }
 
+    public function loginAdmin($username)
+    {
+        $session = $this->getAdminSession();
+        /** @var User $user */
+        $user = $this->createObject(User::class);
+        $user->loadByUsername($username);
+        if (null === $user->getId()) {
+            throw new \Exception('Could not find the admin user');
+        }
+        $session->setUser($user);
+        $session->processLogin();
+    }
+
     public function createObject($className, $new = true)
     {
         if ($new === true) {
@@ -69,5 +88,18 @@ class AbstractTestClass extends AbstractController
     public function assertRedirectsToHomePage()
     {
         $this->assertRedirect($this->stringEndsWith('index.php/'));
+    }
+
+    /**
+     * @return Proxy
+     */
+    public function getAdminSession()
+    {
+        $session = $this->createObject(Proxy::class, false);
+        if ($session->isSessionExists() === false) {
+            $session->start();
+        }
+
+        return $session;
     }
 }

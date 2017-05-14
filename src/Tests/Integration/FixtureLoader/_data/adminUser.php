@@ -19,37 +19,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Model\Config;
-
-use Magento\Framework\App\Config\ScopeConfigInterface;
-
-class Admin
-{
-    const IS_ENABLED_PATH = 'two_factor_admin_users/details/enable';
-    const COMPANY_NAME_PATH = 'two_factor_admin_users/details/company_name';
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
-     * Admin constructor.
-     *
-     * @param ScopeConfigInterface $scopeConfig
-     */
-    public function __construct(ScopeConfigInterface $scopeConfig)
-    {
-        $this->scopeConfig = $scopeConfig;
-    }
-
-    public function isTwoFactorEnabled()
-    {
-        return $this->scopeConfig->getValue(self::IS_ENABLED_PATH);
-    }
-
-    public function getCompanyName()
-    {
-        return $this->scopeConfig->getValue(self::COMPANY_NAME_PATH);
-    }
-}
+$adminData = [
+    [
+        'firstname'   => 'Admin',
+        'lastname'    => 'Admin',
+        'email'       => 'test@example.com',
+        'username'    => 'test_admin',
+        'password'    => 'password123',
+        'is_active'   => '1',
+        'role_type'   => 'G',
+        'resource_id' => 'Magento_Backend::all',
+        'privileges'  => '',
+        'assert_id'   => 0,
+        'role_id'     => 1,
+        'permissions' => 'allow'
+    ]
+];

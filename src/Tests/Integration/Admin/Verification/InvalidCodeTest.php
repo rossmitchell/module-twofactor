@@ -19,46 +19,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Tests\Integration\Customer\LoginRedirection;
+namespace Rossmitchell\Twofactor\Tests\Integration\Admin\Verification;
 
 use Rossmitchell\Twofactor\Tests\Integration\Abstracts\AbstractTestClass;
+use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\AdminUserLoader;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\ConfigurationLoader;
-use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\CustomerLoader;
 
-class EnableForSystemDisabledForCustomerTest extends AbstractTestClass
+class InvalidCodeTest extends AbstractTestClass
 {
-
-    use CustomerLoader;
+    use AdminUserLoader;
     use ConfigurationLoader;
 
-    public static function getCustomerDataPath()
+    public static function getAdminUserDataPath()
     {
-        return __DIR__ . '/../_files/customer.php';
+        return __DIR__ . '/../_files/adminUser.php';
     }
 
     public static function getConfigurationDataPath()
     {
-        return __DIR__ . '/../_files/two_factor_enabled.php';
+        return __DIR__.'/../_files/two_factor_enabled.php';
     }
 
     /**
-     * @magentoDbIsolation   enabled
-     * @magentoDataFixture   loadCustomer
-     * @magentoDataFixture   loadConfiguration
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture loadAdminUsers
+     * @magentoDataFixture loadConfiguration
      */
-    public function testNoRedirectToVerification()
+    public function testInvalidCode()
     {
-        $this->getRequest()->setMethod('POST')->setPostValue(
-            [
-                'form_key' => $this->getFormKey(),
-                'login'    => [
-                    'username' => 'not_enabled@example.com',
-                    'password' => 'password',
-                ],
-            ]
-        );
-        $this->dispatch('/customer/account/loginPost');
+        $this->loginAdmin('two_factor_enabled');
+        $this->getRequest()
+            ->setMethod('POST')
+            ->setParam('secret', 'invalid');
+        $this->dispatch('/backend/twofactor/adminlogin/verify');
 
-        $this->assertRedirect($this->stringContains('customer/account'));
+        $this->assertRedirect($this->stringContains('backend/twofactor/adminlogin/index'));
     }
 }

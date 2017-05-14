@@ -19,21 +19,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Tests\Integration\Customer\LoginRedirection;
+namespace Rossmitchell\Twofactor\Tests\Integration\Admin\LoginRedirection;
 
+use Rossmitchell\Twofactor\Model\Admin\Session;
 use Rossmitchell\Twofactor\Tests\Integration\Abstracts\AbstractTestClass;
+use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\AdminUserLoader;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\ConfigurationLoader;
-use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\CustomerLoader;
 
-class EnableForSystemDisabledForCustomerTest extends AbstractTestClass
+class EnabledForSystemDisabledForUserTest extends AbstractTestClass
 {
-
-    use CustomerLoader;
+    use AdminUserLoader;
     use ConfigurationLoader;
 
-    public static function getCustomerDataPath()
+    public static function getAdminUserDataPath()
     {
-        return __DIR__ . '/../_files/customer.php';
+        return __DIR__ . '/../_files/adminUser.php';
     }
 
     public static function getConfigurationDataPath()
@@ -43,22 +43,29 @@ class EnableForSystemDisabledForCustomerTest extends AbstractTestClass
 
     /**
      * @magentoDbIsolation   enabled
-     * @magentoDataFixture   loadCustomer
+     * @magentoAppIsolation  enabled
      * @magentoDataFixture   loadConfiguration
+     * @magentoDataFixture   loadAdminUsers
      */
-    public function testNoRedirectToVerification()
+    public function testNoRedirectionToVerification()
     {
+
         $this->getRequest()->setMethod('POST')->setPostValue(
             [
                 'form_key' => $this->getFormKey(),
                 'login'    => [
-                    'username' => 'not_enabled@example.com',
-                    'password' => 'password',
+                    'username' => 'two_factor_disabled',
+                    'password' => 'password123',
                 ],
             ]
         );
-        $this->dispatch('/customer/account/loginPost');
+        $this->dispatch('/backend/admin/index/index');
+        $this->assertTrue($this->getResponse()->isRedirect());
 
-        $this->assertRedirect($this->stringContains('customer/account'));
+        $adminSession = $this->getAdminSession();
+        $this->assertTrue($adminSession->isLoggedIn());
+
+        $redirect = $this->getResponse()->getHeader('Location');
+        $this->assertFalse(strpos($redirect, 'twofactor/adminlogin/index'));
     }
 }

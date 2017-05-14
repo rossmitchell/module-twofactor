@@ -38,6 +38,7 @@ class Fetcher
     const ADMIN_AUTHENTICATION_URL = 'twofactor/adminlogin/index';
     const ADMIN_VERIFICATION_URL = 'twofactor/adminlogin/verify';
     const ADMIN_DASHBOARD_URL = 'admin/dashboard/index';
+    const ADMIN_LOGIN_URL = 'admin/index/index';
 
     /**
      * @var UrlInterface
@@ -91,7 +92,7 @@ class Fetcher
      */
     public function getCustomerAccountUrl()
     {
-        return $this->url->getUrl(self::CUSTOMER_ACCOUNT_URL);
+        return $this->getUrl(self::CUSTOMER_ACCOUNT_URL);
     }
 
     /**
@@ -101,7 +102,7 @@ class Fetcher
      */
     public function getAdminDashboardUrl()
     {
-        return $this->url->getUrl(self::ADMIN_DASHBOARD_URL);
+        return $this->getUrl(self::ADMIN_DASHBOARD_URL);
     }
 
     /**
@@ -111,9 +112,13 @@ class Fetcher
      */
     public function getCustomerLogInUrl()
     {
-        return $this->url->getUrl(self::CUSTOMER_LOGIN_URL);
+        return $this->getUrl(self::CUSTOMER_LOGIN_URL);
     }
 
+    public function getAdminLogInUrl()
+    {
+        return $this->getUrl(self::ADMIN_LOGIN_URL);
+    }
     /**
      * This is used to actually get the URL
      *

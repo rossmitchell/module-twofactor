@@ -26,7 +26,6 @@ use Magento\Framework\App\Action\Context;
 use Rossmitchell\Twofactor\Model\Config\Customer as CustomerAdmin;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
-use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 
 abstract class AbstractController extends Action

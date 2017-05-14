@@ -33,16 +33,16 @@ class EnableForSystemEnableForCustomerTest extends AbstractTestClass
 
     public static function getCustomerDataPath()
     {
-        return __DIR__.'/../_files/customer.php';
+        return __DIR__ . '/../_files/customer.php';
     }
 
     public static function getConfigurationDataPath()
     {
-        return __DIR__.'/../_files/two_factor_enabled.php';
+        return __DIR__ . '/../_files/two_factor_enabled.php';
     }
 
     /**
-     * @magentoDbIsolation enabled
+     * @magentoDbIsolation   enabled
      * @magentoDataFixture   loadCustomer
      * @magentoDataFixture   loadConfiguration
      */
@@ -51,7 +51,7 @@ class EnableForSystemEnableForCustomerTest extends AbstractTestClass
         $this->getRequest()->setMethod('POST')->setPostValue(
             [
                 'form_key' => $this->getFormKey(),
-                'login' => [
+                'login'    => [
                     'username' => 'enabled@example.com',
                     'password' => 'password',
                 ],

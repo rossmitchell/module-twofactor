@@ -19,46 +19,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Tests\Integration\Customer\LoginRedirection;
+namespace Rossmitchell\Twofactor\Tests\Integration\Admin\EnterCodePage;
 
 use Rossmitchell\Twofactor\Tests\Integration\Abstracts\AbstractTestClass;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\ConfigurationLoader;
-use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\CustomerLoader;
 
-class EnableForSystemDisabledForCustomerTest extends AbstractTestClass
+class RedirectWhenNotLoggedInTest extends AbstractTestClass
 {
-
-    use CustomerLoader;
     use ConfigurationLoader;
-
-    public static function getCustomerDataPath()
-    {
-        return __DIR__ . '/../_files/customer.php';
-    }
 
     public static function getConfigurationDataPath()
     {
-        return __DIR__ . '/../_files/two_factor_enabled.php';
+        return __DIR__.'/../_files/two_factor_enabled.php';
     }
 
     /**
      * @magentoDbIsolation   enabled
-     * @magentoDataFixture   loadCustomer
      * @magentoDataFixture   loadConfiguration
      */
-    public function testNoRedirectToVerification()
+    public function testPageRedirectsToLogIn()
     {
-        $this->getRequest()->setMethod('POST')->setPostValue(
-            [
-                'form_key' => $this->getFormKey(),
-                'login'    => [
-                    'username' => 'not_enabled@example.com',
-                    'password' => 'password',
-                ],
-            ]
-        );
-        $this->dispatch('/customer/account/loginPost');
-
-        $this->assertRedirect($this->stringContains('customer/account'));
+        $this->dispatch('/backend/twofactor/adminlogin/index');
+        $this->assertRedirect($this->stringContains('admin/index/index'));
     }
 }

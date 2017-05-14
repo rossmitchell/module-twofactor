@@ -29,16 +29,13 @@ use Rossmitchell\Twofactor\Model\Admin\AdminUser;
 use Rossmitchell\Twofactor\Model\Admin\Attribute\TwoFactorSecret;
 use Rossmitchell\Twofactor\Model\Admin\Session;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Verify as GoogleVerify;
-use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
+use Rossmitchell\Twofactor\Model\Config\Admin as UserAdmin;
+use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
 
-class Verify extends Action
+class Verify extends AbstractController
 {
-    /**
-     * @var AdminUser
-     */
-    private $adminUser;
     /**
      * @var TwoFactorSecret
      */
@@ -63,30 +60,34 @@ class Verify extends Action
     /**
      * Verify constructor.
      *
-     * @param Context $context
-     * @param AdminUser $adminUser
-     * @param TwoFactorSecret $twoFactorSecret
-     * @param GoogleVerify $verify
-     * @param IsVerified $isVerified
-     * @param Session $adminSession
-     * @param Fetcher $fetcher
+     * @param Context          $context
+     * @param UserAdmin        $userAdmin
+     * @param AdminUser        $adminGetter
+     * @param Fetcher          $fetcher
+     * @param IsUsingTwoFactor $isUsingTwoFactor
+     * @param TwoFactorSecret  $twoFactorSecret
+     * @param GoogleVerify     $verify
+     * @param IsVerified       $isVerified
+     * @param Session          $adminSession
+     * @param Fetcher          $fetcher
      */
     public function __construct(
         Context $context,
-        AdminUser $adminUser,
+        UserAdmin $userAdmin,
+        AdminUser $adminGetter,
+        IsUsingTwoFactor $isUsingTwoFactor,
         TwoFactorSecret $twoFactorSecret,
         GoogleVerify $verify,
         IsVerified $isVerified,
         Session $adminSession,
         Fetcher $fetcher
     ) {
-        parent::__construct($context);
-        $this->adminUser       = $adminUser;
+        parent::__construct($context, $userAdmin, $adminGetter, $fetcher, $isUsingTwoFactor);
         $this->twoFactorSecret = $twoFactorSecret;
         $this->verify          = $verify;
         $this->isVerified      = $isVerified;
-        $this->adminSession = $adminSession;
-        $this->fetcher = $fetcher;
+        $this->adminSession    = $adminSession;
+        $this->fetcher         = $fetcher;
     }
 
     /**
@@ -97,8 +98,12 @@ class Verify extends Action
      */
     public function execute()
     {
+        if ($this->shouldActionBeRun() === false) {
+            return $this->getRedirectAction();
+        }
+
         $secret    = $this->getRequest()->getParam('secret');
-        $adminUser = $this->adminUser->getAdminUser();
+        $adminUser = $this->getAdminUser();
 
         $verificationPassed = $this->verifySecret($adminUser, $secret);
 
@@ -141,14 +146,6 @@ class Verify extends Action
         $accountUrl = $this->fetcher->getAdminDashboardUrl();
 
         return $this->redirect($accountUrl);
-    }
-
-    private function redirect($path)
-    {
-        $redirect = $this->resultRedirectFactory->create();
-        $redirect->setPath($path);
-
-        return $redirect;
     }
 
     public function _isAllowed()

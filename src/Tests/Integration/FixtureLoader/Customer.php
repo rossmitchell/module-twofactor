@@ -30,16 +30,12 @@ class Customer extends AbstractLoader
 
     public function loadData()
     {
-
         /** @var CustomerFactory $customerFactory */
         foreach ($this->data as $customerData) {
             $customer = $this->createObject(MagentoCustomer::class);
-            #$customer = $customerFactory->create();
-            #$customer = $customer->load($customerData['id']);
             foreach ($customerData as $key => $value) {
                 $customer->setData($key, $value);
             }
-            #$customer->isObjectNew(false);
             $customer->save();
         }
     }
@@ -52,9 +48,6 @@ class Customer extends AbstractLoader
             $customer = $this->createObject(MagentoCustomer::class);
             $customer->setWebsiteId($customerData['websiteId']);
             $customer->loadByEmail($customerData['email']);
-            #if (!$customer->getId()) {
-            #    throw new \Exception("could not load a customer with an id of ".$customerData['id']);
-            #}
             $customer->delete();
         }
     }

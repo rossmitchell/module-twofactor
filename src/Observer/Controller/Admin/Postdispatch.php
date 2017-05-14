@@ -111,7 +111,7 @@ class Postdispatch implements ObserverInterface
             return;
         }
 
-        $controller = $observer->getEvent()->getData('controller_action');
+        $controller = $observer->getEvent()->getData('response');
         $this->redirectToAuthenticationPage($controller);
     }
 
@@ -154,10 +154,9 @@ class Postdispatch implements ObserverInterface
         return false;
     }
 
-    private function redirectToAuthenticationPage(Action $controller)
+    private function redirectToAuthenticationPage($response)
     {
         $twoFactorCheckUrl = $this->fetcher->getAuthenticationUrl(true);
-        $response          = $controller->getResponse();
         $response->setRedirect($twoFactorCheckUrl);
     }
 }
