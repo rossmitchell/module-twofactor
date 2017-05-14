@@ -23,6 +23,8 @@
             <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/</directory>
             <exclude>
                 <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/Tests/</directory>
+                <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/Setup/</directory>
+                <file>../../../vendor/rossmitchell/module-twofactor/src/registration.php</file>
             </exclude>
         </whitelist>
     </filter>
