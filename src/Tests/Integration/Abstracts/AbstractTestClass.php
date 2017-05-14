@@ -68,23 +68,16 @@ class AbstractTestClass extends AbstractController
 
     public function loginAdmin($username, $password)
     {
-        /*$session = $this->getAdminSession();*/
         /** @var User $user */
         $user = $this->createObject(User::class);
         $user->loadByUsername($username);
         if (null === $user->getId()) {
             throw new \Exception('Could not find the admin user');
         }
-        /*$session->setUser($user);
-        $session->processLogin();*/
-
 
         $auth = $this->createObject(Auth::class, false);
-        #$session = $auth->getAuthStorage();
-
         $auth->login($username, $password);
         $this->createObject(AuthPlugin::class, false)->afterLogin($auth);
-
     }
 
     public function createObject($className, $new = true)
