@@ -19,14 +19,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Rossmitchell\Twofactor\Tests\Integration\Admin\EnterCodePage;
+namespace Rossmitchell\Twofactor\Tests\Integration\Admin\AccountEdit;
 
 use Rossmitchell\Twofactor\Tests\Integration\Abstracts\AbstractTestClass;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\AdminUserLoader;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\ConfigurationLoader;
-use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\CustomerLoader;
 
-class EnabledForSystemDisabledForCustomerTest extends AbstractTestClass
+class CheckQRCodeIsDisplayedTest extends AbstractTestClass
 {
     use AdminUserLoader;
     use ConfigurationLoader;
@@ -46,10 +45,11 @@ class EnabledForSystemDisabledForCustomerTest extends AbstractTestClass
      * @magentoDataFixture   loadAdminUsers
      * @magentoDataFixture   loadConfiguration
      */
-    public function testPageRedirectsCorrectly()
+    public function testQrCodeIsVisible()
     {
-        $this->loginAdmin('two_factor_disabled', 'password123');
-        $this->dispatch('/backend/twofactor/adminlogin/index');
-        $this->assertRedirect($this->stringContains('admin/dashboard/index'));
+        $this->loginAdmin('two_factor_enabled', 'password123');
+        $this->dispatch('/backend/admin/system_account/index/');
+        $responseBody = $this->getResponse()->getBody();
+        $this->assertContains('Your QR Code is', $responseBody);
     }
 }

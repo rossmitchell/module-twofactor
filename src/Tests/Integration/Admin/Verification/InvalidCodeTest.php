@@ -47,7 +47,7 @@ class InvalidCodeTest extends AbstractTestClass
      */
     public function testInvalidCode()
     {
-        $this->loginAdmin('two_factor_enabled');
+        $this->loginAdmin('two_factor_enabled', 'password123');
         $this->getRequest()
             ->setMethod('POST')
             ->setParam('secret', 'invalid');

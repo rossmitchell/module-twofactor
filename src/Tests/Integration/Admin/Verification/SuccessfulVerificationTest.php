@@ -48,7 +48,7 @@ class SuccessfulVerificationTest extends AbstractTestClass
      */
     public function testVerificationPasses()
     {
-        $this->loginAdmin('two_factor_enabled');
+        $this->loginAdmin('two_factor_enabled', 'password123');
         $this->getRequest()
             ->setMethod('POST')
             ->setParam('secret', $this->getValidCode('WSQO22WRQ4MRQG2SW3YTSVCLCGKCPSWG'));

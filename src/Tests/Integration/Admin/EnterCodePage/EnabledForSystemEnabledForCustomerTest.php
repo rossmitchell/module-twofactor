@@ -48,7 +48,7 @@ class EnabledForSystemEnabledForCustomerTest extends AbstractTestClass
      */
     public function testPageLoadsCorrectly()
     {
-        $this->loginAdmin('two_factor_enabled');
+        $this->loginAdmin('two_factor_enabled', 'password123');
         $this->dispatch('/backend/twofactor/adminlogin/index');
         $responseBody = $this->getResponse()->getBody();
 

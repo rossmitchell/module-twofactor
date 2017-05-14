@@ -21,7 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Controller\Adminhtml\Adminlogin;
 
-use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\PageFactory;

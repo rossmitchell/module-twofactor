@@ -21,9 +21,12 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\Abstracts;
 
+use Magento\Backend\Model\Auth;
+use Magento\Backend\Model\UrlInterface;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Data\Form\FormKey;
+use Magento\Security\Model\Plugin\Auth as AuthPlugin;
 use Magento\TestFramework\TestCase\AbstractController;
 use Magento\Backend\Model\Auth\Session\Proxy;
 use Magento\User\Model\User;
@@ -63,17 +66,25 @@ class AbstractTestClass extends AbstractController
         }
     }
 
-    public function loginAdmin($username)
+    public function loginAdmin($username, $password)
     {
-        $session = $this->getAdminSession();
+        /*$session = $this->getAdminSession();*/
         /** @var User $user */
         $user = $this->createObject(User::class);
         $user->loadByUsername($username);
         if (null === $user->getId()) {
             throw new \Exception('Could not find the admin user');
         }
-        $session->setUser($user);
-        $session->processLogin();
+        /*$session->setUser($user);
+        $session->processLogin();*/
+
+
+        $auth = $this->createObject(Auth::class, false);
+        #$session = $auth->getAuthStorage();
+
+        $auth->login($username, $password);
+        $this->createObject(AuthPlugin::class, false)->afterLogin($auth);
+
     }
 
     public function createObject($className, $new = true)
@@ -101,5 +112,10 @@ class AbstractTestClass extends AbstractController
         }
 
         return $session;
+    }
+
+    public function disableSecretKeys()
+    {
+        $this->createObject(UrlInterface::class, false)->turnOffSecretKey();
     }
 }
