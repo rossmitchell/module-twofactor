@@ -24,6 +24,8 @@ namespace Rossmitchell\Twofactor\Observer\Customer;
 use Magento\Customer\Model\Customer;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
+use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
 use Rossmitchell\Twofactor\Model\Customer\Session;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
 use Rossmitchell\Twofactor\Model\GoogleTwoFactor\Secret;
@@ -42,19 +44,36 @@ class SaveBefore implements ObserverInterface
      * @var Session
      */
     private $session;
+    /**
+     * @var TwoFactorSecret
+     */
+    private $twoFactorSecret;
+    /**
+     * @var IsUsingTwoFactor
+     */
+    private $isUsingTwoFactor;
 
     /**
      * SaveBefore constructor.
      *
-     * @param Secret     $secret
-     * @param IsVerified $isVerified
-     * @param Session    $session
+     * @param Secret           $secret
+     * @param IsVerified       $isVerified
+     * @param Session          $session
+     * @param TwoFactorSecret  $twoFactorSecret
+     * @param IsUsingTwoFactor $isUsingTwoFactor
      */
-    public function __construct(Secret $secret, IsVerified $isVerified, Session $session)
-    {
-        $this->secret = $secret;
-        $this->isVerified = $isVerified;
-        $this->session = $session;
+    public function __construct(
+        Secret $secret,
+        IsVerified $isVerified,
+        Session $session,
+        TwoFactorSecret $twoFactorSecret,
+        IsUsingTwoFactor $isUsingTwoFactor
+    ) {
+        $this->secret          = $secret;
+        $this->isVerified      = $isVerified;
+        $this->session         = $session;
+        $this->twoFactorSecret = $twoFactorSecret;
+        $this->isUsingTwoFactor = $isUsingTwoFactor;
     }
 
     /**
@@ -78,10 +97,10 @@ class SaveBefore implements ObserverInterface
 
     private function needsToUpdate(Customer $customer)
     {
-        $useTwoFactor = $customer->getData('use_two_factor_authentication');
-        $hasSecret    = $customer->getData('two_factor_secret');
+        $useTwoFactor = $this->isUsingTwoFactor->getValue($customer);
+        $hasSecret    = $this->twoFactorSecret->getValue($customer);
         /* If the use two factor attribute is not set then there is no need to do anything */
-        if (null === $useTwoFactor || $useTwoFactor != 1) {
+        if ($useTwoFactor === false) {
             return false;
         }
 
@@ -97,7 +116,7 @@ class SaveBefore implements ObserverInterface
     private function generateSecretForCustomer(Customer $customer)
     {
         $secret = $this->secret->generateSecret();
-        $customer->setData('two_factor_secret', $secret);
+        $this->twoFactorSecret->setValue($customer, $secret);
     }
 
     private function markCustomerAsVerified()
