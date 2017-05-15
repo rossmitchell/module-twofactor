@@ -2,11 +2,12 @@
 use Rossmitchell\Twofactor\Block\Customer\Account\Edit\QRCode;
 /** @var QRCode $block */
 $customer = $block->getCustomer();
-if($block->hasAQrCode($customer) === false) {
+$displayCode = $block->shouldQrCodeBeDisplayed($customer);
+if($displayCode === false) {
     return;
 }
 ?>
 <p>Please scan the image below to get your authentication code</p>
-<img src="<?php echo $block->getQrCode($customer); ?>" />
+<img src="<?php echo $block->getQrCode($customer);; ?>" />
 
 

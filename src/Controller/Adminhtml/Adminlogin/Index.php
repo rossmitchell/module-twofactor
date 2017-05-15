@@ -68,9 +68,4 @@ class Index extends AbstractController
         }
         return $this->resultPageFactory->create();
     }
-
-    protected function _isAllowed()
-    {
-        return true;
-    }
 }

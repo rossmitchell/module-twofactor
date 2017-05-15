@@ -46,7 +46,7 @@ class Customer
 
     public function isTwoFactorEnabled()
     {
-        return $this->scopeConfig->getValue(self::IS_ENABLED_PATH, ScopeInterface::SCOPE_STORE);
+        return ($this->scopeConfig->getValue(self::IS_ENABLED_PATH, ScopeInterface::SCOPE_STORE) == true);
     }
 
     public function getCompanyName()

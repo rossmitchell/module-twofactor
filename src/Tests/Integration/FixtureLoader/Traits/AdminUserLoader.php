@@ -35,11 +35,4 @@ trait AdminUserLoader
         $customerLoader = new AdminUser($customerData);
         $customerLoader->loadData();
     }
-
-    public static function loadAdminUsersRollback()
-    {
-        $customerData = self::getAdminUserData();
-        $customerLoader = new AdminUser($customerData);
-        #$customerLoader->rollBackData();
-    }
 }

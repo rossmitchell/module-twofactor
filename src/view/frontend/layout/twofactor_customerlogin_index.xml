@@ -5,7 +5,7 @@
     </head>
     <body>
         <referenceContainer name="content">
-            <block class="Rossmitchell\Twofactor\Block\Customerlogin\Index" name="customerlogin.index" template="Rossmitchell_Twofactor::customerlogin/index.phtml"/>
+            <block class="Magento\Framework\View\Element\Template" name="customerlogin.index" template="Rossmitchell_Twofactor::customerlogin/index.phtml"/>
         </referenceContainer>
     </body>
 </page>

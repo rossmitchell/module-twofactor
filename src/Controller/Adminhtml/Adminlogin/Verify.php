@@ -147,9 +147,4 @@ class Verify extends AbstractController
 
         return $this->redirect($accountUrl);
     }
-
-    public function _isAllowed()
-    {
-        return true;
-    }
 }

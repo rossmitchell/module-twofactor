@@ -55,8 +55,7 @@ class QRCode extends Template
      * @param TwoFactorSecret  $twoFactorSecret
      * @param Customer         $customerGetter
      * @param CustomerConfig   $customerConfig
-     *
-     * @internal param array $data
+     * @param array            $data
      */
     public function __construct(
         Template\Context $context,
@@ -73,29 +72,51 @@ class QRCode extends Template
         $this->customerConfig  = $customerConfig;
     }
 
+    /**
+     * A simple getter method to return the current customer
+     *
+     * @return CustomerInterface
+     */
     public function getCustomer()
     {
         return $this->customerGetter->getCustomer();
     }
 
-    public function hasAQrCode(CustomerInterface $customer)
+    /**
+     * Used to check if the code should be displayed - will return false if two factor is disabled in the config, or if
+     * the customer does not have a code. Otherwise returns true
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return bool#
+     */
+    public function shouldQrCodeBeDisplayed(CustomerInterface $customer)
     {
-        if ($this->customerConfig->isTwoFactorEnabled() == false) {
+        if ($this->customerConfig->isTwoFactorEnabled() === false) {
             return false;
         }
 
-        return $this->twoFactorSecret->hasValue($customer);
-    }
-
-    public function getQrCode(CustomerInterface $customer)
-    {
         if ($this->twoFactorSecret->hasValue($customer) === false) {
-            throw new \Exception("Could not load the QR code because the customer does not have a secret");
+            return false;
         }
 
-        $secret = $this->twoFactorSecret->hasValue($customer);
-        $email  = $customer->getEmail();
-        $qrCode = $this->qRCode->generateQRCode('Test', $email, $secret);
+        return true;
+    }
+
+    /**
+     * Used to get the customers QR Code. Will return false if they don't have one, otherwise will return the image
+     * string
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return bool|string
+     */
+    public function getQrCode(CustomerInterface $customer)
+    {
+        $secret      = $this->twoFactorSecret->getValue($customer);
+        $email       = $customer->getEmail();
+        $companyName = $this->customerConfig->getCompanyName();
+        $qrCode      = $this->qRCode->generateQRCode($companyName, $email, $secret);
 
         return $qrCode;
     }
