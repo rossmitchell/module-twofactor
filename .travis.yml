@@ -95,7 +95,7 @@ before_script:
     - cp dev/tests/integration/etc/install-config-mysql.travis.php.dist dev/tests/integration/etc/install-config-mysql.php
 
 script:
-    - bash .travis/run-scripts.bash
+    - bash $TRAVIS_BUILD_DIR/.travis/run-scripts.bash
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
