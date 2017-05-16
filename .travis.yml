@@ -21,6 +21,12 @@ addons:
 language: php
 sudo: required
 dist: trusty
+matrix:
+  includes:
+    - php: 5.6
+      env: GENERATE_COVERAGE="0"
+    - php: 7.0
+      env: GENERATE_COVERAGE="1"
 php:
    - 5.6
    - 7.0
@@ -89,8 +95,8 @@ before_script:
     - cp dev/tests/integration/etc/install-config-mysql.travis.php.dist dev/tests/integration/etc/install-config-mysql.php
 
 script:
-    - cd $TRAVIS_BUILD_DIR/magento2/dev/tests/integration && ../../../vendor/bin/phpunit -c $PWD/phpunit.xml --coverage-text --coverage-clover=$TRAVIS_BUILD_DIR/coverage.clover
+    - bash .travis/run-scripts.bash
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/coverage.clover
+  - if [[ ${GENERATE_COVERAGE} == "1" ]]; then php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/coverage.clover; fi

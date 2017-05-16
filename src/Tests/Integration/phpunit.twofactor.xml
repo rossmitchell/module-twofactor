@@ -13,8 +13,11 @@
     <!-- Test suites definition -->
     <testsuites>
         <!-- Memory tests run first to prevent influence of other tests on accuracy of memory measurements -->
-        <testsuite name="Two Factor Integration Tests">
-            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/src/Tests/Integration/</directory>
+        <testsuite name="Two Factor Admin Integration Tests">
+            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/src/Tests/Integration/Admin</directory>
+        </testsuite>
+        <testsuite name="Two Factor Customer Integration Tests">
+            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/src/Tests/Integration/Customer</directory>
         </testsuite>
     </testsuites>
     <!-- Code coverage filters -->
