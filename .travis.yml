@@ -27,9 +27,6 @@ matrix:
       env: GENERATE_COVERAGE="0"
     - php: 7.0
       env: GENERATE_COVERAGE="1"
-php:
-   - 5.6
-   - 7.0
 
 cache:
   directories:
