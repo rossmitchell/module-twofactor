@@ -140,6 +140,9 @@ abstract class AbstractController extends Action
         return $this->redirect('/');
     }
 
+    /**
+     * @param string $path
+     */
     public function redirect($path)
     {
         $redirect = $this->resultRedirectFactory->create();

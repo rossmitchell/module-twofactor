@@ -27,7 +27,6 @@ use Magento\Framework\View\Element\Template\Context;
 use Rossmitchell\Twofactor\Model\Config\Customer as CustomerConfig;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
-use Rossmitchell\Twofactor\Model\Customer\UsingTwoFactor;
 
 class UseTwoFactor extends Template
 {
@@ -95,6 +94,9 @@ class UseTwoFactor extends Template
         return $this->getSelectedSnippet($customer, false);
     }
 
+    /**
+     * @param boolean $condition
+     */
     private function getSelectedSnippet(CustomerInterface $customer, $condition)
     {
         $html = '';

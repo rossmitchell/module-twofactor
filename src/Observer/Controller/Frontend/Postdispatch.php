@@ -21,7 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Observer\Controller\Frontend;
 
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\ResponseFactory;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -33,7 +32,6 @@ use Rossmitchell\Twofactor\Model\Customer\Session;
 use Rossmitchell\Twofactor\Model\Urls\Checker;
 use Rossmitchell\Twofactor\Model\Urls\Fetcher;
 use Rossmitchell\Twofactor\Model\Verification\IsVerified;
-use Rossmitchell\Twofactor\Model\TwoFactorUrls;
 
 /**
  * Class Postdispatch

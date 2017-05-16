@@ -21,7 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Controller\Adminhtml\Adminlogin;
 
-use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
