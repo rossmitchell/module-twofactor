@@ -14,7 +14,7 @@ build:
     cache:
         directories: [ ~/.composer/cache ]
 filter:
-    paths: ["src"]
+    paths: ["src/*"]
     excluded_paths:
         - "src/Tests/"
 tools:
