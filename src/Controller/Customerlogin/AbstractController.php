@@ -46,7 +46,7 @@ abstract class AbstractController extends Action
      */
     private $redirectAction;
     /**
-     * @var CustomerInterface
+     * @var CustomerInterface|false
      */
     private $customerModel;
     /**
@@ -144,7 +144,7 @@ abstract class AbstractController extends Action
     /**
      * Used to fetch the customer from the session
      *
-     * @return CustomerInterface
+     * @return CustomerInterface|false
      */
     public function getCustomer()
     {
@@ -153,6 +153,14 @@ abstract class AbstractController extends Action
         }
 
         return $this->customerModel;
+    }
+
+    /**
+     * @return Fetcher
+     */
+    public function getUrlFetcher()
+    {
+        return $this->fetcher;
     }
 
     /**
@@ -194,7 +202,7 @@ abstract class AbstractController extends Action
      */
     private function handleMissingCustomer()
     {
-        $loginUrl = $this->fetcher->getCustomerLogInUrl();
+        $loginUrl = $this->getUrlFetcher()->getCustomerLogInUrl();
 
         return $this->redirect($loginUrl);
     }

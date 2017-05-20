@@ -51,10 +51,6 @@ class Verify extends AbstractController
      * @var Session
      */
     private $adminSession;
-    /**
-     * @var Fetcher
-     */
-    private $fetcher;
 
     /**
      * Verify constructor.
@@ -86,7 +82,6 @@ class Verify extends AbstractController
         $this->verify          = $verify;
         $this->isVerified      = $isVerified;
         $this->adminSession    = $adminSession;
-        $this->fetcher         = $fetcher;
     }
 
     /**
@@ -129,7 +124,7 @@ class Verify extends AbstractController
     {
         $this->isVerified->removeIsVerified($this->adminSession);
         $this->addErrorMessage();
-        $authenticateUrl = $this->fetcher->getAuthenticationUrl(true);
+        $authenticateUrl = $this->getUrlFetcher()->getAuthenticationUrl(true);
 
         return $this->redirect($authenticateUrl);
     }
@@ -142,7 +137,7 @@ class Verify extends AbstractController
     private function handleSuccess()
     {
         $this->isVerified->setIsVerified($this->adminSession);
-        $accountUrl = $this->fetcher->getAdminDashboardUrl();
+        $accountUrl = $this->getUrlFetcher()->getAdminDashboardUrl();
 
         return $this->redirect($accountUrl);
     }

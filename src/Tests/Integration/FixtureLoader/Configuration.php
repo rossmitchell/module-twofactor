@@ -50,9 +50,12 @@ class Configuration extends AbstractLoader
         }
     }
 
+    /**
+     * @TODO: Implement rollBackData() method.
+     */
     public function rollBackData()
     {
-        // TODO: Implement rollBackData() method.
+        return false;
     }
 
     public function verifyData()

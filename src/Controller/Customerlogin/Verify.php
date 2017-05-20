@@ -46,10 +46,6 @@ class Verify extends AbstractController
      */
     private $verify;
     /**
-     * @var Fetcher
-     */
-    private $fetcher;
-    /**
      * @var IsVerified
      */
     private $isVerified;
@@ -85,7 +81,6 @@ class Verify extends AbstractController
         parent::__construct($context, $customerAdmin, $customerGetter, $fetcher, $isUsingTwoFactor);
         $this->secret          = $secret;
         $this->verify          = $verify;
-        $this->fetcher         = $fetcher;
         $this->isVerified      = $isVerified;
         $this->customerSession = $customerSession;
     }
@@ -129,7 +124,7 @@ class Verify extends AbstractController
     {
         $this->isVerified->setIsVerified($this->customerSession);
         $this->addSuccessMessage();
-        $accountUrl = $this->fetcher->getCustomerAccountUrl();
+        $accountUrl = $this->getUrlFetcher()->getCustomerAccountUrl();
 
         return $this->redirect($accountUrl);
     }
@@ -138,7 +133,7 @@ class Verify extends AbstractController
     {
         $this->isVerified->removeIsVerified($this->customerSession);
         $this->addErrorMessage();
-        $authenticateUrl = $this->fetcher->getAuthenticationUrl();
+        $authenticateUrl = $this->getUrlFetcher()->getAuthenticationUrl();
 
         return $this->redirect($authenticateUrl);
     }

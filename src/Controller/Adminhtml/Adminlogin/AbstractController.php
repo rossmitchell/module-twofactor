@@ -122,14 +122,14 @@ abstract class AbstractController extends Action
 
     private function redirectToDashboard()
     {
-        $url = $this->fetcher->getAdminDashboardUrl();
+        $url = $this->getUrlFetcher()->getAdminDashboardUrl();
 
         return $this->redirect($url);
     }
 
     private function handleMissingUser()
     {
-        $url = $this->fetcher->getAdminLogInUrl();
+        $url = $this->getUrlFetcher()->getAdminLogInUrl();
 
         return $this->redirect($url);
     }
@@ -145,5 +145,13 @@ abstract class AbstractController extends Action
     public function getRedirectAction()
     {
         return $this->redirectAction;
+    }
+
+    /**
+     * @return Fetcher
+     */
+    public function getUrlFetcher()
+    {
+        return $this->fetcher;
     }
 }

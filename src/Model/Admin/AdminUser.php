@@ -21,6 +21,7 @@
 
 namespace Rossmitchell\Twofactor\Model\Admin;
 
+use Magento\User\Model\ResourceModel\User as UserResourceModel;
 use Magento\User\Model\User;
 
 class AdminUser
@@ -30,20 +31,20 @@ class AdminUser
      */
     private $adminSession;
     /**
-     * @var \Magento\User\Model\ResourceModel\User
+     * @var UserResourceModel
      */
-    private $resorceModel;
+    private $resourceModel;
 
     /**
      * AdminUser constructor.
      *
-     * @param Session                                $adminSession
-     * @param \Magento\User\Model\ResourceModel\User $resourceModel
+     * @param Session           $adminSession
+     * @param UserResourceModel $resourceModel
      */
-    public function __construct(Session $adminSession, \Magento\User\Model\ResourceModel\User $resourceModel)
+    public function __construct(Session $adminSession, UserResourceModel $resourceModel)
     {
-        $this->adminSession = $adminSession;
-        $this->resorceModel = $resourceModel;
+        $this->adminSession  = $adminSession;
+        $this->resourceModel = $resourceModel;
     }
 
     /**
@@ -69,7 +70,7 @@ class AdminUser
     {
 
         if ($user->isSaveAllowed() === true) {
-            $this->resorceModel->save($user->save());
+            $this->resourceModel->save($user->save());
         }
     }
 }
