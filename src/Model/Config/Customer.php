@@ -44,11 +44,21 @@ class Customer
         $this->scopeConfig = $scopeConfig;
     }
 
+    /**
+     * Checks to see if two factor for customers has been enabled in the admin
+     *
+     * @return bool
+     */
     public function isTwoFactorEnabled()
     {
         return ($this->scopeConfig->getValue(self::IS_ENABLED_PATH, ScopeInterface::SCOPE_STORE) == true);
     }
 
+    /**
+     * Gets the company name that is defined in the admin
+     *
+     * @return string|null
+     */
     public function getCompanyName()
     {
         return $this->scopeConfig->getValue(self::COMPANY_NAME_PATH, ScopeInterface::SCOPE_STORE);

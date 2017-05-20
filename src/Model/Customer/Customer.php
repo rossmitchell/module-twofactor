@@ -51,6 +51,11 @@ class Customer
         $this->customerSession    = $customerSession;
     }
 
+    /**
+     * Returns the customer model from the session. Will return false if there is no customer
+     *
+     * @return CustomerInterface|false
+     */
     public function getCustomer()
     {
         if (null === $this->customer) {
@@ -60,6 +65,9 @@ class Customer
         return $this->customer;
     }
 
+    /**
+     * @return bool|CustomerInterface
+     */
     private function getCustomerFromSession()
     {
         $customerId = $this->customerSession->getData('customer_id');

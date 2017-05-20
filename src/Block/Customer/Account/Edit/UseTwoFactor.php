@@ -62,40 +62,81 @@ class UseTwoFactor extends Template
         parent::__construct($context, $data);
         $this->isUsingTwoFactor = $isUsingTwoFactor;
         $this->customerGetter   = $customerGetter;
-        $this->customerConfig = $customerConfig;
+        $this->customerConfig   = $customerConfig;
     }
 
+    /**
+     * We only want to display the block if two factor has been enabled in the admin
+     *
+     * @return bool
+     */
     public function shouldBlockBeDisplayed()
     {
-        return ($this->customerConfig->isTwoFactorEnabled() == true);
+        return ($this->customerConfig->isTwoFactorEnabled() === true);
     }
 
+    /**
+     * Used to get the customer, return false if no customer is present in the session
+     *
+     * @return CustomerInterface|false
+     */
     public function getCustomer()
     {
         return $this->customerGetter->getCustomer();
     }
 
+    /**
+     * Checks to see if the customer is using two factor authentication.
+     *
+     * This first checks if the customer has a value set for the attributes, and if so if the value is true. If both of
+     * these checks pass the method returns true, otherwise it returns false
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return bool
+     */
     public function isUsingTwoFactor(CustomerInterface $customer)
     {
         if ($this->isUsingTwoFactor->hasValue($customer) === false) {
             return false;
         }
 
-        return ($this->isUsingTwoFactor->getValue($customer) == true);
+        return ($this->isUsingTwoFactor->getValue($customer) === true);
     }
 
+    /**
+     * If the customer is using two factor authentication then this will return the selected snippet for use in the
+     * options tag, if not it will return an empty string
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return string
+     */
     public function getSelectedForYes(CustomerInterface $customer)
     {
         return $this->getSelectedSnippet($customer, true);
     }
 
+    /**
+     * If the customer is not using two factor authentication then this will return the selected snippet for use in the
+     * options tag, if they are it will return an empty string
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return string
+     */
     public function getSelectedForNo(CustomerInterface $customer)
     {
         return $this->getSelectedSnippet($customer, false);
     }
 
     /**
-     * @param boolean $condition
+     * Generates the snippet for the two getSelected methods
+     *
+     * @param CustomerInterface $customer
+     * @param boolean           $condition
+     *
+     * @return string
      */
     private function getSelectedSnippet(CustomerInterface $customer, $condition)
     {

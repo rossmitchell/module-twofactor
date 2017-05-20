@@ -130,7 +130,7 @@ class Postdispatch implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        if ($this->customerAdmin->isTwoFactorEnabled() != true) {
+        if ($this->customerAdmin->isTwoFactorEnabled() !== true) {
             return;
         }
 

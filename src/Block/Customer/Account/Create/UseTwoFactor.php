@@ -46,6 +46,6 @@ class UseTwoFactor extends Template
 
     public function shouldFieldBeDisplayed()
     {
-        return ($this->customerConfig->isTwoFactorEnabled() == true);
+        return ($this->customerConfig->isTwoFactorEnabled() === true);
     }
 }

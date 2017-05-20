@@ -75,7 +75,7 @@ class QRCode extends Template
     /**
      * A simple getter method to return the current customer
      *
-     * @return CustomerInterface
+     * @return CustomerInterface|false
      */
     public function getCustomer()
     {
@@ -88,7 +88,7 @@ class QRCode extends Template
      *
      * @param CustomerInterface $customer
      *
-     * @return bool#
+     * @return bool
      */
     public function shouldQrCodeBeDisplayed(CustomerInterface $customer)
     {
