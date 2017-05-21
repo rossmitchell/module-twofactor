@@ -92,9 +92,10 @@ class QRCode extends Template
 
     public function getQRCode(User $adminUser)
     {
-        $secret = $this->getSecret($adminUser);
+        $secret      = $this->getSecret($adminUser);
+        $companyName = $this->adminConfig->getCompanyName();
 
-        return $this->qRCode->generateQRCode('Test Company', $adminUser->getEmail(), $secret);
+        return $this->qRCode->generateQRCode($companyName, $adminUser->getEmail(), $secret);
     }
 
     private function getSecret(User $adminUser)

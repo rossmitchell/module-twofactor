@@ -36,7 +36,7 @@ class ReindexAll extends PHPUnit_Framework_BaseTestListener
      * grid in an install and get the indexes to run at the same time.
      *
      * This then causes the tests to fail, so we are going to try and manually trigger the indexes after everything is
-     * installed, but before the tests run.233
+     * installed, but before the tests run.
      *
      * @param \PHPUnit_Framework_TestSuite $suite
      */

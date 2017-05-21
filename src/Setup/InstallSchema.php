@@ -29,7 +29,6 @@ use Rossmitchell\Twofactor\Model\Admin\Attribute\TwoFactorSecret;
 
 class InstallSchema implements InstallSchemaInterface
 {
-
     /**
      * Installs DB schema for a module
      *
@@ -79,4 +78,5 @@ class InstallSchema implements InstallSchemaInterface
             ]
         );
     }
+
 }

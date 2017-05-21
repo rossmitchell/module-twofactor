@@ -6,4 +6,7 @@
     <type name="Magento\Backend\Controller\Adminhtml\System\Account\Save">
         <plugin name="Rossmitchell_Twofactor_Plugin_Magento_Backend_Controller_Adminhtml_System_Account_Save" disabled="false" sortOrder="10" type="Rossmitchell\Twofactor\Plugin\Magento\Backend\Controller\Adminhtml\System\Account\Save"/>
     </type>
+
+    <preference for="Rossmitchell\Twofactor\Api\Request\GetQrCodeManagementInterface" type="Rossmitchell\Twofactor\Model\Api\Requests\GetQrCodeManagement"/>
+    <preference for="Rossmitchell\Twofactor\Api\Response\GetQrCodeInterface" type="Rossmitchell\Twofactor\Model\Api\Response\GetQrCode"/>
 </config>

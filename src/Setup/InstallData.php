@@ -21,7 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Setup;
 
-use Magento\Customer\Model\Customer;
 use Magento\Customer\Setup\CustomerSetup;
 use Magento\Customer\Setup\CustomerSetupFactory;
 use Magento\Eav\Api\AttributeRepositoryInterface;
@@ -81,7 +80,7 @@ class InstallData implements InstallDataInterface
         $setup->startSetup();
 
         /** @var CustomerSetup $customerSetup */
-        $customerSetup  = $this->customerSetupFactory->create(['setup' => $setup]);
+        $customerSetup  = $this->customerSetupFactory->create();
         $customerEntity = $customerSetup->getEavConfig()->getEntityType('customer');
         $attributeSetId = $customerEntity->getDefaultAttributeSetId();
 
@@ -142,9 +141,6 @@ class InstallData implements InstallDataInterface
             ]
         );
 
-        $indexer = $this->indexerRegistry->get(Customer::CUSTOMER_GRID_INDEXER_ID);
-        $indexer->reindexAll();
 
-        $setup->endSetup();
     }
 }

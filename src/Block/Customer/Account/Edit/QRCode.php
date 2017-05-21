@@ -26,14 +26,10 @@ use Magento\Framework\View\Element\Template;
 use Rossmitchell\Twofactor\Model\Config\Customer as CustomerConfig;
 use Rossmitchell\Twofactor\Model\Customer\Attribute\TwoFactorSecret;
 use Rossmitchell\Twofactor\Model\Customer\Customer;
-use Rossmitchell\Twofactor\Model\GoogleTwoFactor\QRCode as QRCodeGenerator;
+use Rossmitchell\Twofactor\Model\Customer\GetQrCode;
 
 class QRCode extends Template
 {
-    /**
-     * @var QRCodeGenerator
-     */
-    private $qRCode;
     /**
      * @var TwoFactorSecret
      */
@@ -46,30 +42,36 @@ class QRCode extends Template
      * @var CustomerConfig
      */
     private $customerConfig;
+    /**
+     * @var GetQrCode
+     */
+    private $getQrCode;
 
     /**
      * QRCode constructor.
      *
      * @param Template\Context $context
-     * @param QRCodeGenerator  $qRCode
      * @param TwoFactorSecret  $twoFactorSecret
      * @param Customer         $customerGetter
      * @param CustomerConfig   $customerConfig
+     * @param GetQrCode        $getQrCode
      * @param array            $data
+     *
+     * @internal param array $data
      */
     public function __construct(
         Template\Context $context,
-        QRCodeGenerator $qRCode,
         TwoFactorSecret $twoFactorSecret,
         Customer $customerGetter,
         CustomerConfig $customerConfig,
+        GetQrCode $getQrCode,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->qRCode          = $qRCode;
         $this->twoFactorSecret = $twoFactorSecret;
         $this->customerGetter  = $customerGetter;
         $this->customerConfig  = $customerConfig;
+        $this->getQrCode = $getQrCode;
     }
 
     /**
@@ -113,11 +115,6 @@ class QRCode extends Template
      */
     public function getQrCode(CustomerInterface $customer)
     {
-        $secret      = $this->twoFactorSecret->getValue($customer);
-        $email       = $customer->getEmail();
-        $companyName = $this->customerConfig->getCompanyName();
-        $qrCode      = $this->qRCode->generateQRCode($companyName, $email, $secret);
-
-        return $qrCode;
+        return $this->getQrCode->getQrCode($customer);
     }
 }
