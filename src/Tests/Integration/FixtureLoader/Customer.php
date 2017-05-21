@@ -23,8 +23,8 @@ namespace Rossmitchell\Twofactor\Tests\Integration\FixtureLoader;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Customer as MagentoCustomer;
-use Magento\Customer\Model\CustomerFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Indexer\IndexerRegistry;
 
 class Customer extends AbstractLoader
 {
@@ -32,7 +32,7 @@ class Customer extends AbstractLoader
 
     public function loadData()
     {
-
+        $this->runIndexes();
         foreach ($this->data as $customerData) {
             $customer = $this->getCustomer($customerData['email']);
             foreach ($customerData as $key => $value) {
@@ -44,6 +44,7 @@ class Customer extends AbstractLoader
 
     public function rollBackData()
     {
+        $this->runIndexes();
         /** @var MagentoCustomer $customer */
         $this->setSecureArea();
         foreach ($this->data as $customerData) {
@@ -88,5 +89,12 @@ class Customer extends AbstractLoader
         }
 
         return $customer;
+    }
+
+    private function runIndexes()
+    {
+        $indexerRepository = $this->createObject(IndexerRegistry::class, false);
+        $indexer = $indexerRepository->get(MagentoCustomer::CUSTOMER_GRID_INDEXER_ID);
+        $indexer->reindexAll();
     }
 }
