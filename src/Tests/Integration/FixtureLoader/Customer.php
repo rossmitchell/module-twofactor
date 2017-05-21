@@ -21,8 +21,10 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\FixtureLoader;
 
+use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Customer as MagentoCustomer;
 use Magento\Customer\Model\CustomerFactory;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class Customer extends AbstractLoader
 {
@@ -30,9 +32,9 @@ class Customer extends AbstractLoader
 
     public function loadData()
     {
-        /** @var CustomerFactory $customerFactory */
+
         foreach ($this->data as $customerData) {
-            $customer = $this->createObject(MagentoCustomer::class);
+            $customer = $this->getCustomer($customerData['email']);
             foreach ($customerData as $key => $value) {
                 $customer->setData($key, $value);
             }
@@ -45,6 +47,10 @@ class Customer extends AbstractLoader
         /** @var MagentoCustomer $customer */
         $this->setSecureArea();
         foreach ($this->data as $customerData) {
+            $customer = $this->getCustomer($customerData['email'], false);
+            if ($customer === false) {
+                continue;
+            }
             $customer = $this->createObject(MagentoCustomer::class);
             $customer->setWebsiteId($customerData['websiteId']);
             $customer->loadByEmail($customerData['email']);
@@ -59,5 +65,28 @@ class Customer extends AbstractLoader
                 throw new \Exception("You must set an ID for each customer");
             }
         }
+    }
+
+    /**
+     * @param      $email
+     * @param bool $force
+     *
+     * @return bool|\Magento\Customer\Api\Data\CustomerInterface|mixed
+     */
+    private function getCustomer($email, $force = true)
+    {
+        /** @var CustomerRepositoryInterface $repository */
+        $repository = $this->createObject(CustomerRepositoryInterface::class, false);
+        try {
+            $customer = $repository->get($email);
+        } catch (NoSuchEntityException $exception) {
+            if ($force === false) {
+                $customer = false;
+            } else {
+                $customer = $this->createObject(MagentoCustomer::class);
+            }
+        }
+
+        return $customer;
     }
 }
