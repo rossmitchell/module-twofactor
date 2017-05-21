@@ -32,6 +32,7 @@ trait ConfigurationLoader
 
     public static function getConfigurationData()
     {
+        echo get_called_class() . PHP_EOL;
         $configurationData = null;
         require self::getConfigurationDataPath();
         if (null === $configurationData) {
