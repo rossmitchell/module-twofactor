@@ -71,5 +71,6 @@
     <listeners>
         <listener class="Magento\TestFramework\Event\PhpUnit"/>
         <listener class="Magento\TestFramework\ErrorLog\Listener"/>
+        <listener class="Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\ReindexAll" />
     </listeners>
 </phpunit>

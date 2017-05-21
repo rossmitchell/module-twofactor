@@ -19,7 +19,6 @@ trait AdminUserLoader
 
     public static function getAdminUserData()
     {
-        echo get_called_class() . PHP_EOL;
         $adminData = null;
         $dataFile = self::getAdminUserDataPath();
         require $dataFile;

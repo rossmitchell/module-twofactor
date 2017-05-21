@@ -32,11 +32,10 @@ trait ConfigurationLoader
 
     public static function getConfigurationData()
     {
-        echo get_called_class() . PHP_EOL;
         $configurationData = null;
         require self::getConfigurationDataPath();
         if (null === $configurationData) {
-            throw new \Exception("No Customer Data has been set");
+            throw new \Exception("No Configuration Data has been set");
         }
 
         return $configurationData;

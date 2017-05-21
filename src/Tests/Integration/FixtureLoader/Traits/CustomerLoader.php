@@ -19,7 +19,6 @@ trait CustomerLoader
 
     public static function getCustomerData()
     {
-        echo get_called_class() . PHP_EOL;
         $customerData = null;
         $dataFile = self::getCustomerDataPath();
         require $dataFile;
