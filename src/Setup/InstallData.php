@@ -21,10 +21,13 @@
 
 namespace Rossmitchell\Twofactor\Setup;
 
+use Magento\Customer\Model\Customer;
 use Magento\Customer\Setup\CustomerSetup;
 use Magento\Customer\Setup\CustomerSetupFactory;
 use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Eav\Model\Entity\Attribute\SetFactory as AttributeSetFactory;
+use Magento\Eav\Model\Entity\Attribute\Set as AttributeSet;
+use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -43,6 +46,10 @@ class InstallData implements InstallDataInterface
      * @var AttributeRepositoryInterface
      */
     private $attributeRepository;
+    /**
+     * @var IndexerRegistry
+     */
+    private $indexerRegistry;
 
     /**
      * Constructor
@@ -50,15 +57,18 @@ class InstallData implements InstallDataInterface
      * @param CustomerSetupFactory         $customerSetupFactory
      * @param AttributeSetFactory          $attributeSetFactory
      * @param AttributeRepositoryInterface $attributeRepository
+     * @param IndexerRegistry              $indexerRegistry
      */
     public function __construct(
         CustomerSetupFactory $customerSetupFactory,
         AttributeSetFactory $attributeSetFactory,
-        AttributeRepositoryInterface $attributeRepository
+        AttributeRepositoryInterface $attributeRepository,
+        IndexerRegistry $indexerRegistry
     ) {
         $this->customerSetupFactory = $customerSetupFactory;
         $this->attributeSetFactory  = $attributeSetFactory;
         $this->attributeRepository  = $attributeRepository;
+        $this->indexerRegistry = $indexerRegistry;
     }
 
     /**
@@ -68,6 +78,8 @@ class InstallData implements InstallDataInterface
         ModuleDataSetupInterface $setup,
         ModuleContextInterface $context
     ) {
+        $setup->startSetup();
+
         /** @var CustomerSetup $customerSetup */
         $customerSetup  = $this->customerSetupFactory->create(['setup' => $setup]);
         $customerEntity = $customerSetup->getEavConfig()->getEntityType('customer');
@@ -83,23 +95,27 @@ class InstallData implements InstallDataInterface
             'customer',
             $useTwoFactorCode,
             [
-                'type' => 'int',
-                'label' => $useTwoFactorCode,
-                'input' => 'boolean',
-                'source' => '',
+                'type'     => 'int',
+                'label'    => $useTwoFactorCode,
+                'input'    => 'boolean',
+                'source'   => '',
                 'required' => true,
-                'visible' => true,
+                'visible'  => true,
                 'position' => 333,
-                'system' => false,
-                'backend' => '',
+                'system'   => false,
+                'backend'  => '',
             ]
         );
 
         $attribute = $customerSetup->getEavConfig()->getAttribute('customer', $useTwoFactorCode)->addData(
             [
-                'attribute_set_id' => $attributeSetId,
-                'attribute_group_id' => $attributeGroupId,
-                'used_in_forms' => [
+                'attribute_set_id'      => $attributeSetId,
+                'attribute_group_id'    => $attributeGroupId,
+                'is_used_in_grid'       => 1,
+                'is_visible_in_grid'    => 1,
+                'is_filterable_in_grid' => 1,
+                'is_searchable_in_grid' => 1,
+                'used_in_forms'         => [
                     'adminhtml_customer',
                     'customer_account_create',
                     'customer_account_edit',
@@ -114,16 +130,21 @@ class InstallData implements InstallDataInterface
             'customer',
             $secretCode,
             [
-                'type' => 'varchar',
-                'label' => $secretCode,
-                'input' => 'text',
-                'source' => '',
+                'type'     => 'varchar',
+                'label'    => $secretCode,
+                'input'    => 'text',
+                'source'   => '',
                 'required' => false,
-                'visible' => false,
+                'visible'  => false,
                 'position' => 334,
-                'system' => false,
-                'backend' => '',
+                'system'   => false,
+                'backend'  => '',
             ]
         );
+
+        $indexer = $this->indexerRegistry->get(Customer::CUSTOMER_GRID_INDEXER_ID);
+        $indexer->reindexAll();
+
+        $setup->endSetup();
     }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <filters name="two_factor_filter">
+        <filterSelect name="use_two_factor_authentication">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataScope" xsi:type="string">use_two_factor_authentication</item>
+                    <item name="label" xsi:type="string" translate="true">Status</item>
+                    <item name="caption" xsi:type="string" translate="true">Select...</item>
+                    <item name="options" xsi:type="array">
+                        <item name="disable" xsi:type="array">
+                            <item name="value" xsi:type="string">0</item>
+                            <item name="label" xsi:type="string" translate="true">Disabled</item>
+                        </item>
+                        <item name="enable" xsi:type="array">
+                            <item name="value" xsi:type="string">1</item>
+                            <item name="label" xsi:type="string" translate="true">Enabled</item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </filterSelect>
+    </filters>
+
+    <columns name="customer_columns" class="Magento\Customer\Ui\Component\Listing\Columns">
+        <column name="use_two_factor_authentication">
+            <argument name="data" xsi:type="array">
+                <item name="options" xsi:type="object">Rossmitchell\Twofactor\Model\Customer\Source\IsTwoFactorEnabled</item>
+<!--                <item name="js_config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+                </item>-->
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+                    <item name="editor" xsi:type="string">select</item>
+                    <item name="dataType" xsi:type="string">select</item>
+                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/text</item>
+                    <item name="label" xsi:type="string" translate="true">Using Two Factor Authentication</item>
+                    <item name="sortOrder" xsi:type="number">300</item>
+                </item>
+            </argument>
+        </column>
+    </columns>
+</listing>
