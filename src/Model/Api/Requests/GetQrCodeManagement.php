@@ -65,22 +65,5 @@ class GetQrCodeManagement implements GetQrCodeManagementInterface
         }
 
         return $this->responseBuilder->buildResponseForCustomer($customer);
-
-        $hasTwoFactor = $this->isUsingTwoFactor->hasValue($customer);
-        $response->setEmail($customer->getEmail());
-        if ($hasTwoFactor === false) {
-            $response->setIsUsingTwoFactor(false);
-
-            return $response;
-        }
-
-        $isUsingTwoFactor = $this->isUsingTwoFactor->getValue($customer);
-        $response->setIsUsingTwoFactor($isUsingTwoFactor);
-        if ($isUsingTwoFactor === true) {
-            $secret = $this->twoFactorSecret->getValue($customer);
-            $response->setQrCode($this->qrCode->displayCurrentCode($secret));
-        }
-
-        return $response;
     }
 }
