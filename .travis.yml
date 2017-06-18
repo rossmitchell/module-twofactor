@@ -76,6 +76,7 @@ before_script:
     - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
     - sudo a2enmod rewrite actions fastcgi alias
     - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - echo "always_populate_raw_post_data = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     #   awful hack used during travis debugging that I swear I'm going to remove
     #   but then again you're reading this so I didn't remove it and **sigh**
