@@ -23,16 +23,17 @@ namespace Rossmitchell\Twofactor\Tests\Integration\Abstracts;
 
 use Magento\Backend\Model\Auth;
 use Magento\Backend\Model\UrlInterface;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\Session;
 use Magento\Framework\Data\Form\FormKey;
 use Magento\Security\Model\Plugin\Auth as AuthPlugin;
 use Magento\TestFramework\TestCase\AbstractController;
 use Magento\Backend\Model\Auth\Session\Proxy;
 use Magento\User\Model\User;
+use Rossmitchell\Twofactor\Tests\Integration\Helpers\Customer as CustomerHelper;
 
 class AbstractTestClass extends AbstractController
 {
+
+    private $customerHelper;
 
     public function getFormKey()
     {
@@ -55,15 +56,7 @@ class AbstractTestClass extends AbstractController
      */
     public function login($customerEmail, $websiteId = 1)
     {
-        /** @var Session $session */
-        $session = $this->createObject(Session::class, false);
-        /** @var Customer $customer */
-        $customer = $this->createObject(Customer::class);
-        $customer->setWebsiteId($websiteId);
-        $customerId = $customer->loadByEmail($customerEmail);
-        if ($session->loginById($customerId->getId()) === false) {
-            throw new \Exception("Could not log customer in");
-        }
+        $this->getCustomerHelper()->login($customerEmail, $websiteId);
     }
 
     public function loginAdmin($username, $password)
@@ -110,5 +103,17 @@ class AbstractTestClass extends AbstractController
     public function disableSecretKeys()
     {
         $this->createObject(UrlInterface::class, false)->turnOffSecretKey();
+    }
+
+    /**
+     * @return CustomerHelper
+     */
+    private function getCustomerHelper()
+    {
+        if (null === $this->customerHelper) {
+            $this->customerHelper = $this->createObject(CustomerHelper::class);
+        }
+
+        return $this->customerHelper;
     }
 }

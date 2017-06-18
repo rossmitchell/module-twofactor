@@ -21,6 +21,7 @@
 
 namespace Rossmitchell\Twofactor\Model\Api\Requests;
 
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\Exception\AuthenticationException;
 use Rossmitchell\Twofactor\Api\Request\GetQrCodeManagementInterface;
 use Rossmitchell\Twofactor\Api\Response\GetQrCodeInterface;
@@ -54,14 +55,17 @@ class GetQrCodeManagement implements GetQrCodeManagementInterface
 
     /**
      * GET for getQrCode api
+     *
+     * @param string $customerId
+     *
      * @return GetQrCodeInterface
      * @throws AuthenticationException
      */
-    public function getQrCode()
+    public function getQrCode($customerId)
     {
-        $customer = $this->customer->getCustomer();
-        if ($customer === false) {
-            throw new AuthenticationException(__('Could not find a customer'));
+        $customer = $this->customer->getCustomerById($customerId);
+        if (null === $customer->getId()) {
+            throw new AuthenticationException(__('You must be logged in to access your QR Code'));
         }
 
         return $this->responseBuilder->buildResponseForCustomer($customer);

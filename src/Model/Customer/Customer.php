@@ -65,6 +65,11 @@ class Customer
         return $this->customer;
     }
 
+    public function getCustomerById($customerId)
+    {
+        return $this->customerRepository->getById($customerId);
+    }
+
     /**
      * @return bool|CustomerInterface
      */
@@ -74,7 +79,7 @@ class Customer
         $customer   = false;
 
         if (null !== $customerId) {
-            $customer = $this->customerRepository->getById($customerId);
+            $customer = $this->getCustomerById($customerId);
         }
 
         return $customer;

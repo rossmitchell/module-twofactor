@@ -3,7 +3,10 @@
     <route method="GET" url="/V1/twofactor/getqrcode">
         <service class="Rossmitchell\Twofactor\Api\Request\GetQrCodeManagementInterface" method="getQrCode"/>
         <resources>
-            <resource ref="anonymous"/>
+            <resource ref="self"/>
         </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
     </route>
 </routes>

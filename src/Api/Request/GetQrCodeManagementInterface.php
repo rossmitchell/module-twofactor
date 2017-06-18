@@ -25,7 +25,10 @@ interface GetQrCodeManagementInterface
 {
     /**
      * GET for getQrCode api
+     *
+     * @param string $customerId
+     *
      * @return \Rossmitchell\Twofactor\Api\Response\GetQrCodeInterface
      */
-    public function getQrCode();
+    public function getQrCode($customerId);
 }
