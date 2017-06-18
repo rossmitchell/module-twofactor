@@ -33,11 +33,9 @@ matrix:
     - php: 5.6
       env: GENERATE_COVERAGE="0" TEST_TYPE="unit"
     - php: 7.0
-      env: GENERATE_COVERAGE="1" TEST_TYPE="integration"
+      env: GENERATE_COVERAGE="1"
     - php: 7.0
       env: GENERATE_COVERAGE="0" TEST_TYPE="api-functional"
-    - php: 7.0
-      env: GENERATE_COVERAGE="1" TEST_TYPE="unit"
 
 cache:
   directories:
@@ -111,6 +109,7 @@ before_script:
 
 script:
     - mkdir -p ${TRAVIS_BUILD_DIR}/build/logs
+    - mkdir -p ${TRAVIS_BUILD_DIR}/build/cov
     - bash $TRAVIS_BUILD_DIR/.travis/run-scripts.bash
 
 after_success:
