@@ -31,10 +31,10 @@
   },
   "autoload": {
     "files": [
-      "src/registration.php"
+      "registration.php"
     ],
     "psr-4": {
-      "Rossmitchell\\Twofactor\\": "src/"
+      "Rossmitchell\\Twofactor\\": ""
     }
   }
 }

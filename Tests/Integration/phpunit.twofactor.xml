@@ -14,10 +14,10 @@
     <testsuites>
         <!-- Memory tests run first to prevent influence of other tests on accuracy of memory measurements -->
         <testsuite name="Two Factor Admin Integration Tests">
-            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/src/Tests/Integration/Admin</directory>
+            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/Tests/Integration/Admin</directory>
         </testsuite>
         <testsuite name="Two Factor Customer Integration Tests">
-            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/src/Tests/Integration/Customer</directory>
+            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/Tests/Integration/Customer</directory>
         </testsuite>
     </testsuites>
     <!-- Code coverage filters -->
@@ -25,9 +25,9 @@
         <whitelist addUncoveredFilesFromWhiteList="false">
             <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/</directory>
             <exclude>
-                <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/Tests/</directory>
-                <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src/Setup/</directory>
-                <file>../../../vendor/rossmitchell/module-twofactor/src/registration.php</file>
+                <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/Tests/</directory>
+                <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/Setup/</directory>
+                <file>../../../vendor/rossmitchell/module-twofactor/registration.php</file>
             </exclude>
         </whitelist>
     </filter>

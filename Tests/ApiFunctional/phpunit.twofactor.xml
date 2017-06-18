@@ -15,7 +15,7 @@
     <!-- Test suites definition -->
     <testsuites>
         <testsuite name="Magento Web API Functional Tests">
-            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/src/Tests/ApiFunctional</directory>
+            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/Tests/ApiFunctional</directory>
         </testsuite>
     </testsuites>
 
@@ -23,7 +23,7 @@
     <filter>
         <whitelist>
             <!-- All CE modules -->
-            <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor/src</directory>
+            <directory suffix=".php">../../../vendor/rossmitchell/module-twofactor</directory>
         </whitelist>
     </filter>
 
