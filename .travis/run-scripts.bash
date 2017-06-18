@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd ${TRAVIS_BUILD_DIR}/magento2/dev/tests/integration
+cd ${TRAVIS_BUILD_DIR}/magento2/dev/tests/${TEST_TYPE}
 
 if [[ ${GENERATE_COVERAGE} == "1" ]]
 then
