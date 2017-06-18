@@ -13,7 +13,7 @@ env:
     - PULSESTORM_PESTLE_URL=http://pestle.pulsestorm.net
     - PULSESTORM_COMPOSER_REPOSITORY_TO_TEST=https://github.com/rossmitchell/module-twofactor
     - PULSESTORM_COMPOSER_PACKAGE_TO_TEST=rossmitchell/module-twofactor
-    - MAGENTO_VERSION=2.1.6
+    - MAGENTO_VERSION=2.1.7
 addons:
   hosts:
     # should match PULSESTORM_MAGE2_FAKE_URL above
