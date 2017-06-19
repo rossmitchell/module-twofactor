@@ -57,10 +57,6 @@ trait SessionTrait
 
     private function convertKeyToMethodName($type, $key)
     {
-        $allowedMethods = ['get', 'set', 'uns', 'has'];
-        if (!in_array($type, $allowedMethods)) {
-            InputException::invalidFieldValue('type', $type);
-        }
         $methodName = $type.str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
 
         return $methodName;
