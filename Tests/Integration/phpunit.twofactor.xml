@@ -19,6 +19,9 @@
         <testsuite name="Two Factor Customer Integration Tests">
             <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/Tests/Integration/Customer</directory>
         </testsuite>
+        <testsuite name="Two Factor Api Integration Tests">
+            <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/Tests/Integration/Api</directory>
+        </testsuite>
     </testsuites>
     <!-- Code coverage filters -->
     <filter>
