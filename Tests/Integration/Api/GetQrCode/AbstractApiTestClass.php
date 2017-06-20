@@ -24,6 +24,8 @@ namespace Rossmitchell\Twofactor\Tests\Integration\Api\GetQrCode;
 use Rossmitchell\Twofactor\Tests\Integration\Abstracts\AbstractTestClass;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\ConfigurationLoader;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\CustomerLoader;
+use Magento\Customer\Model\Customer as MagentoCustomer;
+use Magento\Customer\Model\Session;
 
 /**
  * Class AbstractApiTestClass
@@ -73,6 +75,35 @@ abstract class AbstractApiTestClass extends AbstractTestClass
         $result = $this->stripTraceFromResult($rawResult);
 
         return $result;
+    }
+
+    public function getToken($email)
+    {
+        /** @var Session $session */
+        $session = $this->createObject(Session::class, false);
+        /** @var MagentoCustomer $customer */
+        $customer = $this->createObject(MagentoCustomer::class);
+        $customer->setWebsiteId(1);
+        $customerId = $customer->loadByEmail($email);
+        if ($session->loginById($customerId->getId()) === false) {
+            throw new \Exception("Could not log customer in");
+        }
+
+
+        /**
+         * @var \Magento\Customer\Model\Customer $customer
+        */
+        if($customer->getId()){
+            /**
+             * @var \Magento\Integration\Model\Oauth\TokenFactory $tokenFactory
+             */
+            $tokenFactory = $this->createObject(\Magento\Integration\Model\Oauth\TokenFactory::class);
+
+            $customerToken = $tokenFactory->create();
+            $tokenKey = $customerToken->createCustomerToken($customerId->getId())->getToken();
+            return $tokenKey;
+        }
+        throw new \Exception('Could not generate a token');
     }
 
     private function stripQrCodeFromResult($result)

@@ -30,6 +30,7 @@ use Magento\Backend\Model\Auth\Session\Proxy;
 use Magento\User\Model\User;
 use Rossmitchell\Twofactor\Tests\Integration\Helpers\Customer as CustomerHelper;
 
+
 class AbstractTestClass extends AbstractController
 {
 
