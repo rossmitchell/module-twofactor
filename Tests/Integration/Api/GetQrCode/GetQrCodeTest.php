@@ -21,8 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\Api\GetQrCode;
 
-use Zend\Http\Headers;
-
 class GetQrCodeTest extends AbstractApiTestClass
 {
     /**
@@ -32,10 +30,7 @@ class GetQrCodeTest extends AbstractApiTestClass
      */
     public function testAValidRequest()
     {
-        $token = $this->getToken('not_enabled@example.com');
-        $header  = new Headers();
-        $header->addHeaderLine('Authorization: Bearer ', $token);
-        $this->getRequest()->setHeaders($header);
+        $this->handleCustomerAuth('enabled@example.com');
         $returnedJson = $this->makeRequest();
         $expectedJson = $this->getExpectedJson();
 

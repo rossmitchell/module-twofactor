@@ -21,8 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\Api\GetQrCode;
 
-use Zend\Http\Headers;
-
 class CustomerWithoutAQrCodeShouldNotGenerateAnErrorTest extends AbstractApiTestClass
 {
 
@@ -33,10 +31,7 @@ class CustomerWithoutAQrCodeShouldNotGenerateAnErrorTest extends AbstractApiTest
      */
     public function testCustomerWithoutDoesNotError()
     {
-        $token = $this->getToken('not_enabled@example.com');
-        $header  = new Headers();
-        $header->addHeaderLine('Authorization: Bearer ', $token);
-        $this->getRequest()->setHeaders($header);
+        $this->handleCustomerAuth('not_enabled@example.com');
         $returnedJson = $this->makeRequest();
         $expectedJson = $this->getExpectedJson();
 
@@ -51,6 +46,5 @@ class CustomerWithoutAQrCodeShouldNotGenerateAnErrorTest extends AbstractApiTest
     "is_using_two_factor": false
 }
 JSON;
-
     }
 }

@@ -21,8 +21,6 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\Api\GetQrCode;
 
-use Zend\Http\Headers;
-
 class HandleWhenDisabledErrorTest extends AbstractApiTestClass
 {
 
@@ -30,7 +28,7 @@ class HandleWhenDisabledErrorTest extends AbstractApiTestClass
 
     public static function getConfigurationDataPath()
     {
-        return __DIR__.'/../../Customer/_files/two_factor_disabled.php';
+        return __DIR__ . '/../../Customer/_files/two_factor_disabled.php';
     }
 
     /**
@@ -40,10 +38,7 @@ class HandleWhenDisabledErrorTest extends AbstractApiTestClass
      */
     public function testThereIsNotAnErrorWhenDisabled()
     {
-        $token = $this->getToken('not_enabled@example.com');
-        $header  = new Headers();
-        $header->addHeaderLine('Authorization: Bearer ', $token);
-        $this->getRequest()->setHeaders($header);
+        $this->handleCustomerAuth('enabled@example.com');
         $returnedJson = $this->makeRequest();
         $expectedJson = $this->getExpectedJson();
 

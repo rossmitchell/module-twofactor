@@ -12,9 +12,9 @@
 >
     <!-- Test suites definition -->
     <testsuites>
-<!--        <testsuite name="Two Factor Api Integration Tests">
+        <testsuite name="Two Factor Api Integration Tests">
             <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/Tests/Integration/Api</directory>
-        </testsuite>-->
+        </testsuite>
         <testsuite name="Two Factor Admin Integration Tests">
             <directory suffix="Test.php">../../../vendor/rossmitchell/module-twofactor/Tests/Integration/Admin</directory>
         </testsuite>

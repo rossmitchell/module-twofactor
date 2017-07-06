@@ -21,11 +21,12 @@
 
 namespace Rossmitchell\Twofactor\Tests\Integration\Api\GetQrCode;
 
+use Magento\Customer\Model\Customer as MagentoCustomer;
+use Magento\Customer\Model\Session;
 use Rossmitchell\Twofactor\Tests\Integration\Abstracts\AbstractTestClass;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\ConfigurationLoader;
 use Rossmitchell\Twofactor\Tests\Integration\FixtureLoader\Traits\CustomerLoader;
-use Magento\Customer\Model\Customer as MagentoCustomer;
-use Magento\Customer\Model\Session;
+use Zend\Http\Headers;
 
 /**
  * Class AbstractApiTestClass
@@ -34,7 +35,7 @@ use Magento\Customer\Model\Session;
  * duplicated to gather this. This is a first attempt at allowing the test cases to be as similar as possible - although
  * I will almost certainly come back to this and make improvements in the future.
  *
- * @date 20/06/2020 - No I haven't
+ * @date    20/06/2020 - No I haven't
  *
  * @package Rossmitchell\Twofactor\Tests\Integration\Api\GetQrCode
  */
@@ -46,14 +47,13 @@ abstract class AbstractApiTestClass extends AbstractTestClass
 
     public static function getCustomerDataPath()
     {
-        return __DIR__.'/../../Customer/_files/customer.php';
+        return __DIR__ . '/../../Customer/_files/customer.php';
     }
 
     public static function getConfigurationDataPath()
     {
-        return __DIR__.'/../../Customer/_files/two_factor_enabled.php';
+        return __DIR__ . '/../../Customer/_files/two_factor_enabled.php';
     }
-
 
     public function makeRequest()
     {
@@ -77,6 +77,16 @@ abstract class AbstractApiTestClass extends AbstractTestClass
         return $result;
     }
 
+    public function handleCustomerAuth($email)
+    {
+        $token  = $this->getToken($email);
+        $header = new Headers();
+        $header->addHeaderLine('Authorization: Bearer ' . $token);
+        $header->addHeaderLine('X_REQUESTED_WITH', 'XMLHttpRequest');
+        $this->getRequest()->setHeaders($header);
+        $this->login($email);
+    }
+
     public function getToken($email)
     {
         /** @var Session $session */
@@ -92,15 +102,16 @@ abstract class AbstractApiTestClass extends AbstractTestClass
 
         /**
          * @var \Magento\Customer\Model\Customer $customer
-        */
-        if($customer->getId()){
+         */
+        if ($customer->getId()) {
             /**
              * @var \Magento\Integration\Model\Oauth\TokenFactory $tokenFactory
              */
             $tokenFactory = $this->createObject(\Magento\Integration\Model\Oauth\TokenFactory::class);
 
             $customerToken = $tokenFactory->create();
-            $tokenKey = $customerToken->createCustomerToken($customerId->getId())->getToken();
+            $tokenKey      = $customerToken->createCustomerToken($customerId->getId())->getToken();
+
             return $tokenKey;
         }
         throw new \Exception('Could not generate a token');
