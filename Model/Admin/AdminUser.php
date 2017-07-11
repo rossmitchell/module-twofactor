@@ -21,6 +21,7 @@
 
 namespace Rossmitchell\Twofactor\Model\Admin;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\User\Model\ResourceModel\User as UserResourceModel;
 use Magento\User\Model\User;
 
@@ -55,7 +56,7 @@ class AdminUser
     {
         $adminUser = $this->adminSession->getData('user');
         if (!$adminUser instanceof User) {
-            throw new \Exception("No admin user found");
+            throw new LocalizedException(__("No admin user found"));
         }
 
         return $adminUser;

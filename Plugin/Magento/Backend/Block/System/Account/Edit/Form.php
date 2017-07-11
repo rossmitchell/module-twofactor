@@ -24,6 +24,7 @@ namespace Rossmitchell\Twofactor\Plugin\Magento\Backend\Block\System\Account\Edi
 use Magento\Backend\Block\System\Account\Edit\Form as OriginalClass;
 use Magento\Framework\Data\Form as OriginalForm;
 use Magento\Framework\Data\Form\Element\Fieldset;
+use Magento\Framework\Exception\LocalizedException;
 use Rossmitchell\Twofactor\Model\Admin\AdminUser;
 use Rossmitchell\Twofactor\Model\Admin\Attribute\IsUsingTwoFactor;
 use Rossmitchell\Twofactor\Model\Config\Admin;
@@ -77,7 +78,7 @@ class Form
     {
         $fieldSet = $form->getElement('base_fieldset');
         if (!($fieldSet instanceof Fieldset)) {
-            throw new \Exception("The Fieldset has changed it's ID");
+            throw new LocalizedException(__("The Fieldset has changed it's ID"));
         }
 
         return $fieldSet;

@@ -57,14 +57,14 @@ class Verify extends AbstractController
     /**
      * Constructor
      *
-     * @param Context $context
-     * @param Customer $customerGetter
-     * @param TwoFactorSecret $secret
-     * @param GoogleVerify $verify
-     * @param Fetcher $fetcher
-     * @param IsVerified $isVerified
-     * @param Session $customerSession
-     * @param CustomerAdmin $customerAdmin
+     * @param Context          $context
+     * @param Customer         $customerGetter
+     * @param TwoFactorSecret  $secret
+     * @param GoogleVerify     $verify
+     * @param Fetcher          $fetcher
+     * @param IsVerified       $isVerified
+     * @param Session          $customerSession
+     * @param CustomerAdmin    $customerAdmin
      * @param IsUsingTwoFactor $isUsingTwoFactor
      */
     public function __construct(
@@ -99,7 +99,7 @@ class Verify extends AbstractController
 
         $secret   = $this->getRequest()->getParam('secret');
         $customer = $this->getCustomer();
-        if($customer === false) {
+        if ($customer === false) {
             return $this->handleError();
         }
         $verificationPassed = $this->verifySecret($customer, $secret);

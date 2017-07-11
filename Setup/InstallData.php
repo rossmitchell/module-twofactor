@@ -140,7 +140,5 @@ class InstallData implements InstallDataInterface
                 'backend'  => '',
             ]
         );
-
-
     }
 }
