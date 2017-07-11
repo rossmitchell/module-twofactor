@@ -65,6 +65,11 @@ class Customer
         return $this->customer;
     }
 
+    /**
+     * @param $customerId
+     *
+     * @return CustomerInterface
+     */
     public function getCustomerById($customerId)
     {
         return $this->customerRepository->getById($customerId);

@@ -99,6 +99,9 @@ class Verify extends AbstractController
 
         $secret   = $this->getRequest()->getParam('secret');
         $customer = $this->getCustomer();
+        if($customer === false) {
+            return $this->handleError();
+        }
         $verificationPassed = $this->verifySecret($customer, $secret);
 
         if ($verificationPassed === false) {
